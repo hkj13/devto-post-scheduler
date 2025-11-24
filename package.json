@@ -1,0 +1,31 @@
+{
+    "name": "devto-post-scheduler",
+    "version": "1.0.0",
+    "description": "Automated AI-powered technical content posting to Dev.to with GPT-4 and DALL-E 3",
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node src/index.js",
+        "dev": "node --watch src/index.js",
+        "test": "node src/index.js --test-mode"
+    },
+    "keywords": [
+        "devto",
+        "automation",
+        "ai",
+        "content-generation",
+        "openai",
+        "gpt-4",
+        "dall-e",
+        "technical-writing"
+    ],
+    "author": "Hemanath Kumar J",
+    "license": "MIT",
+    "dependencies": {
+        "openai": "^4.20.1",
+        "axios": "^1.6.2",
+        "node-cron": "^3.0.3",
+        "dotenv": "^16.3.1",
+        "winston": "^3.11.0"
+    }
+}
