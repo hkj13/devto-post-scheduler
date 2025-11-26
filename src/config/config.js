@@ -12,6 +12,20 @@ const config = {
     // Dev.to Configuration
     devto: {
         apiKey: process.env.DEVTO_API_KEY,
+        enabled: process.env.DEVTO_ENABLED !== 'false', // Default: enabled
+    },
+
+    // Medium Configuration
+    medium: {
+        apiKey: process.env.MEDIUM_API_KEY,
+        enabled: process.env.MEDIUM_ENABLED === 'true', // Default: disabled
+    },
+
+    // Twitter Configuration
+    twitter: {
+        bearerToken: process.env.TWITTER_BEARER_TOKEN,
+        enabled: process.env.TWITTER_ENABLED === 'true', // Default: disabled
+        postType: process.env.TWITTER_POST_TYPE || 'single', // 'single' or 'thread'
     },
 
     // Scheduling Configuration
@@ -34,13 +48,43 @@ const config = {
 // Validate required configuration
 function validateConfig() {
     const missingVars = [];
+    const enabledPlatforms = [];
 
+    // OpenAI is always required
     if (!config.openai.apiKey) {
         missingVars.push('OPENAI_API_KEY');
     }
 
-    if (!config.devto.apiKey) {
-        missingVars.push('DEVTO_API_KEY');
+    // Check enabled platforms
+    if (config.devto.enabled) {
+        enabledPlatforms.push('Dev.to');
+        if (!config.devto.apiKey) {
+            missingVars.push('DEVTO_API_KEY (Dev.to is enabled)');
+        }
+    }
+
+    if (config.medium.enabled) {
+        enabledPlatforms.push('Medium');
+        if (!config.medium.apiKey) {
+            missingVars.push('MEDIUM_API_KEY (Medium is enabled)');
+        }
+    }
+
+    if (config.twitter.enabled) {
+        enabledPlatforms.push('Twitter');
+        if (!config.twitter.bearerToken) {
+            missingVars.push('TWITTER_BEARER_TOKEN (Twitter is enabled)');
+        }
+    }
+
+    // At least one platform must be enabled
+    if (enabledPlatforms.length === 0) {
+        throw new Error(
+            'No platforms enabled! Please enable at least one platform:\n' +
+            '  - Set DEVTO_ENABLED=true for Dev.to\n' +
+            '  - Set MEDIUM_ENABLED=true for Medium\n' +
+            '  - Set TWITTER_ENABLED=true for Twitter'
+        );
     }
 
     if (missingVars.length > 0) {
@@ -49,6 +93,8 @@ function validateConfig() {
             'Please set these in your Railway environment variables or .env file.'
         );
     }
+
+    return enabledPlatforms;
 }
 
 export { config, validateConfig };

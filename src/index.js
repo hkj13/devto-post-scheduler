@@ -1,48 +1,40 @@
 import cron from 'node-cron';
 import { config, validateConfig } from './config/config.js';
 import logger from './utils/logger.js';
-import devto from './services/devto.js';
 import devtoContentGenerator from './services/devtoContentGenerator.js';
+import multiPlatformPoster from './services/multiPlatformPoster.js';
 
 /**
- * Main function to generate and post content to Dev.to
+ * Main function to generate and post content to all enabled platforms
  */
 async function createAndPost() {
     try {
         logger.info('=====================================');
-        logger.info('Starting Dev.to content generation process...');
+        logger.info('🚀 Starting multi-platform content generation...');
 
         // Pick a random topic
         const topics = config.content.topics;
         const topic = topics[Math.floor(Math.random() * topics.length)];
 
-        logger.info(`Selected topic: ${topic}`);
+        logger.info(`📋 Selected topic: ${topic}`);
 
         // Generate article with cover image
         const article = await devtoContentGenerator.generateQuickInsight(topic, true);
 
-        logger.info(`Generated article: "${article.title}"`);
-        logger.info(`Content length: ${article.content.length} characters`);
-        logger.info(`Tags: ${article.tags.join(', ')}`);
+        logger.info(`✅ Generated article: "${article.title}"`);
+        logger.info(`   Content length: ${article.content.length} characters`);
+        logger.info(`   Tags: ${article.tags.join(', ')}`);
         if (article.coverImage) {
-            logger.info(`Cover image: ${article.coverImage}`);
+            logger.info(`   Cover image: ✅`);
         }
 
-        // Post to Dev.to
-        const result = await devto.postArticle(
-            article.title,
-            article.content,
-            article.tags,
-            true, // publish immediately
-            article.coverImage // include cover image
-        );
+        // Post to all enabled platforms
+        const results = await multiPlatformPoster.postToAllPlatforms(article);
 
-        logger.info('✅ Article published successfully!');
-        logger.info(`Article URL: ${result.url}`);
-        logger.info(`Article ID: ${result.id}`);
+        logger.info('✅ Multi-platform posting complete!');
         logger.info('=====================================');
 
-        return result;
+        return results;
     } catch (error) {
         logger.error('Failed to create and post content:', error);
         throw error;
@@ -85,8 +77,9 @@ async function testMode() {
 async function startAgent() {
     try {
         // Validate configuration
-        validateConfig();
+        const enabledPlatforms = validateConfig();
         logger.info('✅ Configuration validated successfully');
+        logger.info(`📱 Enabled platforms: ${enabledPlatforms.join(', ')}`);
 
         // Check if running in test mode
         if (process.argv.includes('--test-mode')) {
@@ -94,10 +87,13 @@ async function startAgent() {
             return;
         }
 
-        // Verify Dev.to API key
-        const isValid = await devto.verifyApiKey();
-        if (!isValid) {
-            throw new Error('Dev.to API key is invalid. Please update your environment variables.');
+        // Verify all enabled platform API keys
+        const verifications = await multiPlatformPoster.verifyAllPlatforms();
+        if (verifications.failed.length > 0) {
+            throw new Error(
+                `API verification failed for: ${verifications.failed.join(', ')}. ` +
+                'Please check your API keys.'
+            );
         }
 
         // Schedule the posting job
@@ -111,7 +107,8 @@ async function startAgent() {
             }
         });
 
-        logger.info('🚀 Dev.to AI Agent started successfully!');
+        logger.info('🚀 AutoContent Studio started successfully!');
+        logger.info(`📱 Posting to: ${enabledPlatforms.join(' + ')}`);
         logger.info('⏰ Waiting for scheduled posting time...');
         logger.info('Press Ctrl+C to stop the agent');
 

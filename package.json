@@ -1,7 +1,7 @@
 {
-    "name": "devto-post-scheduler",
-    "version": "1.0.0",
-    "description": "Automated AI-powered technical content posting to Dev.to with GPT-4 and DALL-E 3",
+    "name": "autocontent-studio",
+    "version": "2.0.0",
+    "description": "Multi-platform AI content automation for Dev.to, Medium, and Twitter",
     "main": "src/index.js",
     "type": "module",
     "scripts": {
