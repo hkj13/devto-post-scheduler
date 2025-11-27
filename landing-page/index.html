@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoContent Studio - AI-Powered Multi-Platform Content Automation</title>
+    <meta name="description" content="Automate your tech blog across Dev.to, Medium, and Twitter with AI. Save 10+ hours/week. $47/month.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold">⚡ AutoContent Studio</div>
+                <a href="#pricing" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Get Started
+                </a>
+            </div>
+        </nav>
+        
+        <div class="container mx-auto px-6 py-20 text-center">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                Post to 3 Platforms.<br/>
+                <span class="text-yellow-300">One AI Tool.</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-purple-100 max-w-3xl mx-auto">
+                Automated AI content generation and publishing for Dev.to, Medium, and Twitter. 
+                Save 10+ hours per week on content creation.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#pricing" class="bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg text-lg font-bold hover:bg-yellow-300 transition shadow-lg">
+                    Start at $47/month →
+                </a>
+                <a href="#demo" class="bg-white/20 backdrop-blur text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/30 transition">
+                    See How It Works
+                </a>
+            </div>
+            <div class="mt-12 text-purple-200">
+                <p>✓ No setup required  ✓ Cancel anytime  ✓ 7-day money-back guarantee</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Platforms Section -->
+    <div class="bg-white py-16">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                Post to 3 Platforms Simultaneously
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Dev.to -->
+                <div class="feature-card bg-gradient-to-br from-purple-50 to-white border border-purple-100 rounded-xl p-8">
+                    <div class="text-5xl mb-4">📝</div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Dev.to</h3>
+                    <p class="text-gray-600 mb-4">
+                        500K+ developers. Perfect for technical content and building your developer brand.
+                    </p>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li>✓ Auto-generated cover images</li>
+                        <li>✓ Markdown formatting</li>
+                        <li>✓ Instant publishing</li>
+                    </ul>
+                </div>
+
+                <!-- Medium -->
+                <div class="feature-card bg-gradient-to-br from-green-50 to-white border border-green-100 rounded-xl p-8">
+                    <div class="text-5xl mb-4">💰</div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Medium</h3>
+                    <p class="text-gray-600 mb-4">
+                        170M+ readers. Partner Program earns you $50-500+ per article based on reading time.
+                    </p>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li>✓ Monetization ready</li>
+                        <li>✓ Massive reach</li>
+                        <li>✓ Professional platform</li>
+                    </ul>
+                </div>
+
+                <!-- Twitter -->
+                <div class="feature-card bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-xl p-8">
+                    <div class="text-5xl mb-4">🐦</div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Twitter/X</h3>
+                    <p class="text-gray-600 mb-4">
+                        Massive viral potential. Auto-tweet summaries or post engaging threads about your articles.
+                    </p>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li>✓ Single tweets or threads</li>
+                        <li>✓ Drive traffic to articles</li>
+                        <li>✓ Build social presence</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div id="demo" class="bg-gray-50 py-16">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                How It Works (It's Ridiculously Simple)
+            </h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-8">
+                    <div class="flex gap-6 items-start">
+                        <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold flex-shrink-0">
+                            1
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800">Connect Your Platforms</h3>
+                            <p class="text-gray-600">
+                                Simple API key setup for Dev.to, Medium, and Twitter. Takes 5 minutes total. We guide you through every step.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-6 items-start">
+                        <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold flex-shrink-0">
+                            2
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800">Set Your Schedule</h3>
+                            <p class="text-gray-600">
+                                Choose when to post (default: 9 AM daily). Pick your content topics: AI, ML, Cloud, Data Science, etc.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-6 items-start">
+                        <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold flex-shrink-0">
+                            3
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800">AI Does Everything</h3>
+                            <p class="text-gray-600">
+                                GPT-4 writes high-quality articles (400-600 words). DALL-E generates professional cover images. 
+                                Content is fresh, current, and relevant to 2025 trends.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-6 items-start">
+                        <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold flex-shrink-0">
+                            4
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800">Automatic Publishing</h3>
+                            <p class="text-gray-600">
+                                Your content goes live on all 3 platforms simultaneously. You get notifications with links to each post.
+                                Wake up to published content!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="bg-white py-16">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                Everything You Need
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div class="p-6 border border-gray-200 rounded-lg">
+                    <div class="text-3xl mb-3">🤖</div>
+                    <h3 class="font-bold text-lg mb-2">GPT-4 Powered</h3>
+                    <p class="text-gray-600 text-sm">Latest AI model for high-quality, engaging content</p>
+                </div>
+                <div class="p-6 border border-gray-200 rounded-lg">
+                    <div class="text-3xl mb-3">🎨</div>
+                    <h3 class="font-bold text-lg mb-2">DALL-E Images</h3>
+                    <p class="text-gray-600 text-sm">Auto-generated professional cover images for every post</p>
+                </div>
+                <div class="p-6 border border-gray-200 rounded-lg">
+                    <div class="text-3xl mb-3">⏰</div>
+                    <h3 class="font-bold text-lg mb-2">Flexible Scheduling</h3>
+                    <p class="text-gray-600 text-sm">Daily, weekly, or custom cron schedules</p>
+                </div>
+                <div class="p-6 border border-gray-200 rounded-lg">
+                    <div class="text-3xl mb-3">📊</div>
+                    <h3 class="font-bold text-lg mb-2">Performance Tracking</h3>
+                    <p class="text-gray-600 text-sm">Get notifications with URLs and posting status</p>
+                </div>
+                <div class="p-6 border border-gray-200 rounded-lg">
+                    <div class="text-3xl mb-3">🔧</div>
+                    <h3 class="font-bold text-lg mb-2">Fully Customizable</h3>
+                    <p class="text-gray-600 text-sm">Choose topics, adjust settings, enable/disable platforms</p>
+                </div>
+                <div class="p-6 border border-gray-200 rounded-lg">
+                    <div class="text-3xl mb-3">☁️</div>
+                    <h3 class="font-bold text-lg mb-2">Cloud Hosted</h3>
+                    <p class="text-gray-600 text-sm">Runs 24/7 on Railway. No server management needed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Proof / Stats -->
+    <div class="bg-purple-50 py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold text-purple-600 mb-2">10+</div>
+                    <div class="text-gray-600">Hours Saved/Week</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-purple-600 mb-2">3</div>
+                    <div class="text-gray-600">Platforms Covered</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-purple-600 mb-2">365</div>
+                    <div class="text-gray-600">Posts Per Year</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-purple-600 mb-2">$0</div>
+                    <div class="text-gray-600">Setup Fees</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing -->
+    <div id="pricing" class="bg-white py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-800">
+                Simple, Transparent Pricing
+            </h2>
+            <p class="text-center text-gray-600 mb-12 text-lg">
+                One plan. All features. Cancel anytime.
+            </p>
+            
+            <div class="max-w-md mx-auto">
+                <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl shadow-2xl p-8 text-white">
+                    <div class="text-center mb-6">
+                        <div class="text-sm font-semibold uppercase tracking-wide text-purple-200 mb-2">Pro Plan</div>
+                        <div class="flex items-baseline justify-center gap-2">
+                            <span class="text-5xl font-bold">$47</span>
+                            <span class="text-xl text-purple-200">/month</span>
+                        </div>
+                        <p class="text-purple-200 mt-2">Save 10+ hours per week</p>
+                    </div>
+
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Post to Dev.to, Medium, and Twitter</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>AI-generated content with GPT-4</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>DALL-E cover image generation</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Daily automated publishing</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Custom topics and scheduling</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Email support</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>7-day money-back guarantee</span>
+                        </li>
+                    </ul>
+
+                    <a href="mailto:contact@grolytix.com?subject=AutoContent Studio - Get Started" 
+                       class="block w-full bg-yellow-400 text-gray-900 text-center px-8 py-4 rounded-lg text-lg font-bold hover:bg-yellow-300 transition">
+                        Get Started Now →
+                    </a>
+                    
+                    <p class="text-center text-sm text-purple-200 mt-4">
+                        No setup fees. Cancel anytime.
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-center text-gray-500 mt-8 text-sm">
+                💳 Secure payment powered by Stripe
+            </p>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="bg-gray-50 py-16">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                Frequently Asked Questions
+            </h2>
+            <div class="max-w-3xl mx-auto space-y-6">
+                <details class="bg-white p-6 rounded-lg shadow-sm">
+                    <summary class="font-semibold text-lg cursor-pointer">How do I get started?</summary>
+                    <p class="mt-3 text-gray-600">
+                        After signing up, you'll receive setup instructions via email. You'll need API keys from Dev.to, Medium, and Twitter (all free to get). 
+                        Setup takes about 5 minutes total. We guide you through everything.
+                    </p>
+                </details>
+
+                <details class="bg-white p-6 rounded-lg shadow-sm">
+                    <summary class="font-semibold text-lg cursor-pointer">Can I use just one or two platforms?</summary>
+                    <p class="mt-3 text-gray-600">
+                        Absolutely! You can enable or disable any platform. Start with just Dev.to and add others later.
+                    </p>
+                </details>
+
+                <details class="bg-white p-6 rounded-lg shadow-sm">
+                    <summary class="font-semibold text-lg cursor-pointer">What topics can I write about?</summary>
+                    <p class="mt-3 text-gray-600">
+                        Choose from 11+ tech topics: Agentic AI, Generative AI, LLMs, Cloud AI, Data Science, Machine Learning, MLOps, Deep Learning, NLP, RAG, Computer Vision, and more.
+                    </p>
+                </details>
+
+                <details class="bg-white p-6 rounded-lg shadow-sm">
+                    <summary class="font-semibold text-lg cursor-pointer">How does billing work?</summary>
+                    <p class="mt-3 text-gray-600">
+                        $47/month, billed monthly. Cancel anytime from your account dashboard. 7-day money-back guarantee if you're not satisfied.
+                    </p>
+                </details>
+
+                <details class="bg-white p-6 rounded-lg shadow-sm">
+                    <summary class="font-semibold text-lg cursor-pointer">Will this work for non-tech content?</summary>
+                    <p class="mt-3 text-gray-600">
+                        Currently optimized for tech/developer content. However, we can customize topics for your niche. Contact us for details.
+                    </p>
+                </details>
+
+                <details class="bg-white p-6 rounded-lg shadow-sm">
+                    <summary class="font-semibold text-lg cursor-pointer">Do I need coding knowledge?</summary>
+                    <p class="mt-3 text-gray-600">
+                        No coding required! We handle all the technical setup. You just connect your accounts and choose your preferences.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="gradient-bg text-white py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-6">
+                Ready to Automate Your Content?
+            </h2>
+            <p class="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
+                Join tech bloggers who are saving 10+ hours per week and growing their audience on autopilot.
+            </p>
+            <a href="mailto:contact@grolytix.com?subject=AutoContent Studio - Get Started" 
+               class="inline-block bg-yellow-400 text-gray-900 px-10 py-4 rounded-lg text-lg font-bold hover:bg-yellow-300 transition shadow-lg">
+                Start Your First Month →
+            </a>
+            <p class="mt-4 text-purple-200">
+                7-day money-back guarantee • No setup fees • Cancel anytime
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="container mx-auto px-6 text-center">
+            <div class="text-2xl font-bold text-white mb-4">⚡ AutoContent Studio</div>
+            <p class="mb-6">AI-powered multi-platform content automation</p>
+            <div class="flex justify-center gap-8 mb-6">
+                <a href="#" class="hover:text-white transition">About</a>
+                <a href="#" class="hover:text-white transition">Privacy</a>
+                <a href="#" class="hover:text-white transition">Terms</a>
+                <a href="mailto:contact@grolytix.com" class="hover:text-white transition">Contact</a>
+            </div>
+            <p class="text-sm text-gray-500">
+                © 2025 AutoContent Studio. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
