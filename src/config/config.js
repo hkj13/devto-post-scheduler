@@ -33,8 +33,12 @@ const config = {
     },
 
     // Scheduling Configuration
+    // For 100 posts/month (~3 posts/day), optimal times for global reach:
+    // - 06:00 UTC (11:30 AM IST, Asia/Europe morning)
+    // - 14:00 UTC (7:30 PM IST, 9 AM EST - US morning)
+    // - 18:00 UTC (11:30 PM IST, 1 PM EST - US afternoon peak)
     schedule: {
-        cronExpression: process.env.POST_SCHEDULE || '0 9 * * *', // Default: 9 AM daily
+        cronExpression: process.env.POST_SCHEDULE || '0 6,14,18 * * *', // Default: 3x daily at optimal times
     },
 
     // Content Configuration
