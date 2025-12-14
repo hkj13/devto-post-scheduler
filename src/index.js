@@ -87,13 +87,11 @@ async function startAgent() {
             return;
         }
 
-        // Verify all enabled platform API keys
+        // Verify all enabled platform API keys (warn but don't block on failures)
         const verifications = await multiPlatformPoster.verifyAllPlatforms();
         if (verifications.failed.length > 0) {
-            throw new Error(
-                `API verification failed for: ${verifications.failed.join(', ')}. ` +
-                'Please check your API keys.'
-            );
+            logger.warn(`⚠️ Some platforms failed verification: ${verifications.failed.join(', ')}`);
+            logger.warn('Continuing anyway - posting may fail for unverified platforms.');
         }
 
         // Schedule the posting job
