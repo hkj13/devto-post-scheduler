@@ -91,7 +91,7 @@ async function startAgent() {
         const verifications = await multiPlatformPoster.verifyAllPlatforms();
         if (verifications.failed.length > 0) {
             logger.warn(`⚠️ Some platforms failed verification: ${verifications.failed.join(', ')}`);
-            logger.warn('Continuing anyway - posting may fail for unverified platforms.');
+            logger.warn('Will attempt posting anyway - may fail for unverified platforms.');
         }
 
         // Schedule the posting job
