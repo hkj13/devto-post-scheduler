@@ -80,8 +80,10 @@ function validateConfig() {
 
     if (config.twitter.enabled) {
         enabledPlatforms.push('Twitter');
-        if (!config.twitter.bearerToken) {
-            missingVars.push('TWITTER_BEARER_TOKEN (Twitter is enabled)');
+        // Check for OAuth 1.0a credentials (required for posting)
+        if (!config.twitter.apiKey || !config.twitter.apiSecret || 
+            !config.twitter.accessToken || !config.twitter.accessTokenSecret) {
+            missingVars.push('TWITTER_API_KEY, TWITTER_API_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET (Twitter is enabled)');
         }
     }
 
