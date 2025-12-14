@@ -76,6 +76,8 @@ async function testMode() {
  */
 async function startAgent() {
     try {
+        logger.info('🔄 AutoContent Studio v2.1.0 starting...');
+        
         // Validate configuration
         const enabledPlatforms = validateConfig();
         logger.info('✅ Configuration validated successfully');
@@ -91,7 +93,7 @@ async function startAgent() {
         const verifications = await multiPlatformPoster.verifyAllPlatforms();
         if (verifications.failed.length > 0) {
             logger.warn(`⚠️ Some platforms failed verification: ${verifications.failed.join(', ')}`);
-            logger.warn('Will attempt posting anyway - may fail for unverified platforms.');
+            logger.warn('Continuing anyway - will attempt posting to all platforms.');
         }
 
         // Schedule the posting job
