@@ -1,13 +1,28 @@
-import axios from 'axios';
+import { TwitterApi } from 'twitter-api-v2';
 import logger from '../utils/logger.js';
 import { config } from '../config/config.js';
 
 /**
- * Twitter/X API Service (v2)
+ * Twitter/X API Service (v2) with OAuth 1.0a
  * Docs: https://developer.twitter.com/en/docs/twitter-api
  */
 
-const TWITTER_API_BASE = 'https://api.twitter.com/2';
+let twitterClient = null;
+
+/**
+ * Get Twitter client with OAuth 1.0a authentication
+ */
+function getTwitterClient() {
+    if (!twitterClient) {
+        twitterClient = new TwitterApi({
+            appKey: config.twitter.apiKey,
+            appSecret: config.twitter.apiSecret,
+            accessToken: config.twitter.accessToken,
+            accessSecret: config.twitter.accessTokenSecret,
+        });
+    }
+    return twitterClient;
+}
 
 /**
  * Post a tweet
@@ -21,31 +36,22 @@ async function postTweet(text) {
         // Truncate if too long
         const tweetText = text.length > 280 ? text.substring(0, 277) + '...' : text;
         
-        const response = await axios.post(
-            `${TWITTER_API_BASE}/tweets`,
-            { text: tweetText },
-            {
-                headers: {
-                    'Authorization': `Bearer ${config.twitter.bearerToken}`,
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+        const client = getTwitterClient();
+        const tweet = await client.v2.tweet(tweetText);
 
-        const tweet = response.data.data;
         logger.info(`✅ Tweet posted successfully!`);
-        logger.info(`Tweet ID: ${tweet.id}`);
+        logger.info(`Tweet ID: ${tweet.data.id}`);
         
-        const tweetUrl = `https://twitter.com/user/status/${tweet.id}`;
+        const tweetUrl = `https://twitter.com/i/status/${tweet.data.id}`;
         logger.info(`Tweet URL: ${tweetUrl}`);
 
         return {
-            id: tweet.id,
-            text: tweet.text,
+            id: tweet.data.id,
+            text: tweet.data.text,
             url: tweetUrl,
         };
     } catch (error) {
-        logger.error('Error posting to Twitter:', error.response?.data || error.message);
+        logger.error('Error posting to Twitter:', error.message);
         throw error;
     }
 }
@@ -59,42 +65,29 @@ async function postThread(tweets) {
     try {
         logger.info(`Posting thread with ${tweets.length} tweets...`);
         
+        const client = getTwitterClient();
         const postedTweets = [];
         let previousTweetId = null;
 
         for (let i = 0; i < tweets.length; i++) {
             const tweetText = tweets[i].length > 280 ? tweets[i].substring(0, 277) + '...' : tweets[i];
             
-            const payload = {
-                text: tweetText,
-            };
-
-            // Add reply reference for threading
+            let tweet;
             if (previousTweetId) {
-                payload.reply = {
-                    in_reply_to_tweet_id: previousTweetId,
-                };
+                // Reply to previous tweet for threading
+                tweet = await client.v2.reply(tweetText, previousTweetId);
+            } else {
+                // First tweet in thread
+                tweet = await client.v2.tweet(tweetText);
             }
 
-            const response = await axios.post(
-                `${TWITTER_API_BASE}/tweets`,
-                payload,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${config.twitter.bearerToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-
-            const tweet = response.data.data;
             postedTweets.push({
-                id: tweet.id,
-                text: tweet.text,
-                url: `https://twitter.com/user/status/${tweet.id}`,
+                id: tweet.data.id,
+                text: tweet.data.text,
+                url: `https://twitter.com/i/status/${tweet.data.id}`,
             });
 
-            previousTweetId = tweet.id;
+            previousTweetId = tweet.data.id;
             logger.info(`✅ Posted tweet ${i + 1}/${tweets.length}`);
 
             // Small delay between tweets to avoid rate limits
@@ -106,7 +99,7 @@ async function postThread(tweets) {
         logger.info('✅ Thread posted successfully!');
         return postedTweets;
     } catch (error) {
-        logger.error('Error posting thread:', error.response?.data || error.message);
+        logger.error('Error posting thread:', error.message);
         throw error;
     }
 }
@@ -118,20 +111,13 @@ async function verifyApiKey() {
     try {
         logger.info('Verifying Twitter API access...');
         
-        // Try to get user info
-        const response = await axios.get(
-            `${TWITTER_API_BASE}/users/me`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${config.twitter.bearerToken}`,
-                },
-            }
-        );
+        const client = getTwitterClient();
+        const me = await client.v2.me();
 
-        logger.info(`✅ Twitter API verified. Username: @${response.data.data.username}`);
+        logger.info(`✅ Twitter API verified. Username: @${me.data.username}`);
         return true;
     } catch (error) {
-        logger.error('Twitter API verification failed');
+        logger.error('Twitter API verification failed:', error.message);
         return false;
     }
 }

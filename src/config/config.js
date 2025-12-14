@@ -24,6 +24,10 @@ const config = {
     // Twitter Configuration
     twitter: {
         bearerToken: process.env.TWITTER_BEARER_TOKEN,
+        apiKey: process.env.TWITTER_API_KEY,
+        apiSecret: process.env.TWITTER_API_SECRET,
+        accessToken: process.env.TWITTER_ACCESS_TOKEN,
+        accessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
         enabled: process.env.TWITTER_ENABLED === 'true', // Default: disabled
         postType: process.env.TWITTER_POST_TYPE || 'single', // 'single' or 'thread'
     },

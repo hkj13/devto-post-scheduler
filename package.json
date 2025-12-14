@@ -22,10 +22,11 @@
     "author": "Hemanath Kumar J",
     "license": "MIT",
     "dependencies": {
-        "openai": "^4.20.1",
         "axios": "^1.6.2",
-        "node-cron": "^3.0.3",
         "dotenv": "^16.3.1",
+        "node-cron": "^3.0.3",
+        "openai": "^4.20.1",
+        "twitter-api-v2": "^1.28.0",
         "winston": "^3.11.0"
     }
 }
