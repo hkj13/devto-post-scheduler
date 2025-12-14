@@ -35,7 +35,7 @@ const config = {
 
     // Content Configuration
     content: {
-        topics: (process.env.CONTENT_TOPICS || 'AgenticAI,GenerativeAI,LLM,CloudAI,DataScience,ML').split(','),
+        topics: (process.env.CONTENT_TOPICS || 'AgenticAI,GenerativeAI,LLM,CloudComputing,DataScience,MachineLearning,DevOps,Kubernetes,Docker,Microservices,SystemDesign,SoftwareArchitecture,APIDesign,WebDevelopment,React,NextJS,NodeJS,Python,Rust,Go,TypeScript,CyberSecurity,BlockchainDev,ProductManagement,TechLeadership,StartupTech,OpenSource,TechCareers,CICD,Observability,DatabaseDesign,GraphQL,ServerlessComputing,EdgeComputing,MLOps,DataEngineering,TechTrends2025').split(','),
     },
 
     // Logging Configuration

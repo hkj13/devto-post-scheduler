@@ -66,20 +66,59 @@ High quality, eye-catching, professional.`;
  */
 function generateTags(topic) {
     const tagMap = {
+        // AI & ML
         'AgenticAI': ['ai', 'machinelearning', 'agentic', 'automation'],
         'GenerativeAI': ['ai', 'generativeai', 'gpt', 'machinelearning'],
         'LLM': ['ai', 'machinelearning', 'llm', 'nlp'],
-        'CloudAI': ['ai', 'cloud', 'machinelearning', 'cloudcomputing'],
-        'DataScience': ['datascience', 'machinelearning', 'python', 'analytics'],
-        'ML': ['machinelearning', 'ai', 'datascience', 'python'],
+        'MachineLearning': ['machinelearning', 'ai', 'datascience', 'python'],
         'MLOps': ['mlops', 'machinelearning', 'devops', 'ai'],
-        'DeepLearning': ['deeplearning', 'ai', 'neuralnetworks', 'machinelearning'],
-        'NLP': ['nlp', 'ai', 'machinelearning', 'language'],
-        'RAG': ['ai', 'rag', 'llm', 'machinelearning'],
-        'ComputerVision': ['computervision', 'ai', 'machinelearning', 'deeplearning'],
+        'DataScience': ['datascience', 'machinelearning', 'python', 'analytics'],
+        'DataEngineering': ['dataengineering', 'data', 'python', 'sql'],
+        
+        // Cloud & DevOps
+        'CloudComputing': ['cloud', 'aws', 'devops', 'infrastructure'],
+        'DevOps': ['devops', 'cicd', 'automation', 'kubernetes'],
+        'Kubernetes': ['kubernetes', 'devops', 'docker', 'cloud'],
+        'Docker': ['docker', 'devops', 'containers', 'kubernetes'],
+        'CICD': ['cicd', 'devops', 'automation', 'github'],
+        'Observability': ['observability', 'devops', 'monitoring', 'logging'],
+        'ServerlessComputing': ['serverless', 'cloud', 'aws', 'architecture'],
+        'EdgeComputing': ['edge', 'iot', 'cloud', 'architecture'],
+        
+        // Architecture & Design
+        'Microservices': ['microservices', 'architecture', 'api', 'backend'],
+        'SystemDesign': ['systemdesign', 'architecture', 'backend', 'scalability'],
+        'SoftwareArchitecture': ['architecture', 'design', 'patterns', 'backend'],
+        'APIDesign': ['api', 'rest', 'graphql', 'backend'],
+        'DatabaseDesign': ['database', 'sql', 'backend', 'architecture'],
+        'GraphQL': ['graphql', 'api', 'webdev', 'javascript'],
+        
+        // Web Development
+        'WebDevelopment': ['webdev', 'javascript', 'frontend', 'programming'],
+        'React': ['react', 'javascript', 'webdev', 'frontend'],
+        'NextJS': ['nextjs', 'react', 'webdev', 'javascript'],
+        'NodeJS': ['nodejs', 'javascript', 'backend', 'webdev'],
+        
+        // Programming Languages
+        'Python': ['python', 'programming', 'datascience', 'backend'],
+        'Rust': ['rust', 'programming', 'systems', 'performance'],
+        'Go': ['go', 'golang', 'backend', 'programming'],
+        'TypeScript': ['typescript', 'javascript', 'webdev', 'programming'],
+        
+        // Security & Blockchain
+        'CyberSecurity': ['security', 'cybersecurity', 'devops', 'cloud'],
+        'BlockchainDev': ['blockchain', 'web3', 'crypto', 'programming'],
+        
+        // Product & Career
+        'ProductManagement': ['product', 'management', 'agile', 'career'],
+        'TechLeadership': ['leadership', 'management', 'career', 'tech'],
+        'StartupTech': ['startup', 'entrepreneurship', 'tech', 'career'],
+        'OpenSource': ['opensource', 'github', 'community', 'programming'],
+        'TechCareers': ['career', 'jobs', 'programming', 'learning'],
+        'TechTrends2025': ['tech', 'trends', 'future', 'innovation'],
     };
 
-    return tagMap[topic] || ['ai', 'machinelearning', 'tech', 'programming'];
+    return tagMap[topic] || ['programming', 'tech', 'webdev', 'learning'];
 }
 
 /**
@@ -122,9 +161,25 @@ Examples:
         const cleanTitle = title.replace(/^["']|["']$/g, ''); // Remove quotes
         logger.info(`Generated title: "${cleanTitle}" (${cleanTitle.length} chars)`);
 
-        // Generate CONTENT with date context
+        // Generate CONTENT with date context and varied styles
         logger.info('Step 2: Generating content...');
-        const contentPrompt = `Write a technical insight about ${topic} for Dev.to.
+        
+        // Randomly select article style for variety
+        const articleStyles = [
+            'practical tutorial with actionable steps',
+            'opinion piece with industry insights',
+            'comparison of tools/approaches',
+            'lessons learned from real experience',
+            'beginner-friendly explainer',
+            'advanced deep-dive analysis',
+            'trend analysis and predictions',
+            'problem-solving guide',
+            'best practices compilation',
+            'myth-busting article'
+        ];
+        const randomStyle = articleStyles[Math.floor(Math.random() * articleStyles.length)];
+        
+        const contentPrompt = `Write a ${randomStyle} about ${topic} for Dev.to.
 
 IMPORTANT CONTEXT:
 - Today's date: ${currentMonth}
@@ -133,20 +188,23 @@ IMPORTANT CONTEXT:
 ${latestNews}
 
 Requirements:
-- Length: 400-600 words
-- Tone: Informative, engaging, current
+- Length: 500-700 words
+- Style: ${randomStyle}
+- Tone: Informative, engaging, current, conversational
 - Reference ${currentYear} developments, trends, and technologies
-- Include 2-3 key takeaways or practical tips
+- Include 3-4 key takeaways or practical tips
 - Use markdown formatting (headings ##, lists, **bold**, *italic*)
 - Focus on what's happening NOW in ${currentYear}
-- Be specific with examples, numbers, and facts
+- Be specific with examples, real tools, numbers, and facts
+- Include a personal perspective or opinion where relevant
 - DO NOT reference years before ${currentYear - 1} unless for brief historical context
 - IMPORTANT: Do NOT use code blocks with triple backticks (\`\`\`)
 - IMPORTANT: Do NOT use {% raw %} or any Liquid template tags
 - Use inline code with single backticks only
-- Make it feel fresh and current
+- Make it feel fresh, unique, and current
+- End with a thought-provoking question or call-to-action
 
-Make it valuable and easy to read in 3-4 minutes.`;
+Make it valuable, unique, and easy to read in 3-4 minutes.`;
 
         const content = await generateWithGPT4(contentPrompt, 900);
         logger.info(`Generated content: ${content.length} characters`);
