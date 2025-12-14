@@ -78,7 +78,35 @@ async function postToDevto(article, config) {
     return { platform: 'devto', url: response.data.url, id: response.data.id };
 }
 
-// Post to Twitter
+// Generate Twitter thread content from article
+async function generateTwitterThread(article, config) {
+    const openai = new OpenAI({ apiKey: config.openai.apiKey });
+    
+    const prompt = `Convert this article into a Twitter/X thread (5-7 tweets).
+
+Article Title: ${article.title}
+Article Content: ${article.content.substring(0, 3000)}
+
+Requirements:
+- First tweet: Hook that grabs attention (start with emoji)
+- Middle tweets: Key insights/tips (one idea per tweet)
+- Last tweet: Call-to-action for engagement
+- Each tweet max 270 characters
+- Include relevant emojis
+- Make it valuable standalone content (not a redirect)
+
+Return as JSON: {"tweets": ["tweet1", "tweet2", "tweet3", ...]}`;
+
+    const response = await openai.chat.completions.create({
+        model: config.openai.model,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+    });
+
+    return JSON.parse(response.choices[0].message.content);
+}
+
+// Post to Twitter as a thread
 async function postToTwitter(article, config) {
     const client = new TwitterApi({
         appKey: config.twitter.apiKey,
@@ -87,10 +115,27 @@ async function postToTwitter(article, config) {
         accessSecret: config.twitter.accessTokenSecret,
     });
 
-    const tweet = `🚀 New post: ${article.title}\n\n${article.tags.map(t => `#${t}`).join(' ')}\n\nRead more on Dev.to! 👇`;
+    // Generate thread content
+    const threadData = await generateTwitterThread(article, config);
+    const tweets = threadData.tweets;
     
-    const response = await client.v2.tweet(tweet.substring(0, 280));
-    return { platform: 'twitter', id: response.data.id };
+    // Post first tweet
+    let lastTweetId = null;
+    const postedTweets = [];
+    
+    for (let i = 0; i < tweets.length; i++) {
+        const tweetText = tweets[i].substring(0, 280);
+        
+        const options = lastTweetId 
+            ? { reply: { in_reply_to_tweet_id: lastTweetId } }
+            : {};
+        
+        const response = await client.v2.tweet(tweetText, options);
+        lastTweetId = response.data.id;
+        postedTweets.push(response.data.id);
+    }
+    
+    return { platform: 'twitter', threadId: postedTweets[0], tweetCount: postedTweets.length };
 }
 
 export default async function handler(req, res) {
