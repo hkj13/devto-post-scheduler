@@ -78,35 +78,42 @@ async function postToDevto(article, config) {
     return { platform: 'devto', url: response.data.url, id: response.data.id };
 }
 
-// Generate Twitter thread content from article
-async function generateTwitterThread(article, config) {
-    const openai = new OpenAI({ apiKey: config.openai.apiKey });
+// Convert article to Twitter thread WITHOUT extra OpenAI call
+function createTwitterThread(article) {
+    const tweets = [];
     
-    const prompt = `Convert this article into a Twitter/X thread (5-7 tweets).
-
-Article Title: ${article.title}
-Article Content: ${article.content.substring(0, 3000)}
-
-Requirements:
-- First tweet: Hook that grabs attention (start with emoji)
-- Middle tweets: Key insights/tips (one idea per tweet)
-- Last tweet: Call-to-action for engagement
-- Each tweet max 270 characters
-- Include relevant emojis
-- Make it valuable standalone content (not a redirect)
-
-Return as JSON: {"tweets": ["tweet1", "tweet2", "tweet3", ...]}`;
-
-    const response = await openai.chat.completions.create({
-        model: config.openai.model,
-        messages: [{ role: 'user', content: prompt }],
-        response_format: { type: 'json_object' },
-    });
-
-    return JSON.parse(response.choices[0].message.content);
+    // Tweet 1: Title + hook
+    tweets.push(`🚀 ${article.title}\n\nA thread 🧵👇`);
+    
+    // Extract content paragraphs (split by double newline or headers)
+    const content = article.content
+        .replace(/```[\s\S]*?```/g, '') // Remove code blocks
+        .replace(/#{1,3}\s/g, '') // Remove markdown headers
+        .replace(/\*\*/g, '') // Remove bold
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // Convert links to text
+    
+    const paragraphs = content
+        .split(/\n\n+/)
+        .map(p => p.trim())
+        .filter(p => p.length > 50 && p.length < 500);
+    
+    // Add 3-4 key content tweets
+    for (let i = 0; i < Math.min(4, paragraphs.length); i++) {
+        let tweet = paragraphs[i];
+        if (tweet.length > 270) {
+            tweet = tweet.substring(0, 267) + '...';
+        }
+        tweets.push(tweet);
+    }
+    
+    // Final tweet: hashtags
+    const hashtags = article.tags.slice(0, 4).map(t => `#${t.replace(/\s+/g, '')}`).join(' ');
+    tweets.push(`💡 Follow for more tech insights!\n\n${hashtags}`);
+    
+    return tweets;
 }
 
-// Post to Twitter as a thread
+// Post to Twitter as a thread (no extra OpenAI call)
 async function postToTwitter(article, config) {
     const client = new TwitterApi({
         appKey: config.twitter.apiKey,
@@ -115,11 +122,10 @@ async function postToTwitter(article, config) {
         accessSecret: config.twitter.accessTokenSecret,
     });
 
-    // Generate thread content
-    const threadData = await generateTwitterThread(article, config);
-    const tweets = threadData.tweets;
+    // Create thread from existing article content
+    const tweets = createTwitterThread(article);
     
-    // Post first tweet
+    // Post thread
     let lastTweetId = null;
     const postedTweets = [];
     
