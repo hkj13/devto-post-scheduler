@@ -70,18 +70,44 @@ function getCategoryForToday() {
     return { isRecap: false, category: TOPIC_CATEGORIES[index] };
 }
 
-// AI autonomously chooses specific topic and approach
-async function chooseTopicAndApproach(category, config) {
+// Get recent topic history from Dev.to API
+async function getRecentTopics(config) {
+    try {
+        const response = await axios.get('https://dev.to/api/articles/me/published', {
+            headers: { 'api-key': config.devto.apiKey },
+            params: { per_page: 30 } // Last 30 articles
+        });
+        
+        return response.data.map(article => ({
+            title: article.title,
+            tags: article.tag_list,
+            published_at: article.published_at
+        }));
+    } catch (error) {
+        console.warn('Could not fetch recent topics:', error.message);
+        return [];
+    }
+}
+
+// AI autonomously chooses specific topic and approach (with history awareness)
+async function chooseTopicAndApproach(category, recentTopics, config) {
     const openai = new OpenAI({ apiKey: config.openai.apiKey });
     
+    // Build context of recent topics
+    const recentTopicsContext = recentTopics.length > 0 
+        ? `\n\nRECENT TOPICS TO AVOID (last 30 posts):\n${recentTopics.map(t => `- ${t.title} [${t.tags.join(', ')}]`).join('\n')}\n\nIMPORTANT: Choose a DIFFERENT topic that hasn't been covered recently.`
+        : '';
+    
     const prompt = `You are a technical content strategist. Choose a SPECIFIC, IN-DEPTH topic within "${category}".
+${recentTopicsContext}
 
 Requirements:
 1. Pick a specific subtopic that's:
    - Practical and actionable
    - Has tutorial/walkthrough potential
    - Includes code examples or step-by-step guides
-   - Covers recent tools/frameworks (2024-2026)
+   - Covers recent tools/frameworks (2024-2025)
+   - NOT similar to any recent topics listed above
 
 2. Choose the content type:
    - "tutorial": Step-by-step guide with code
@@ -349,10 +375,15 @@ export default async function handler(req, res) {
             topicInfo = { type: 'weekly_recap', category: 'recap', topic: 'Weekly Tech Recap' };
         } else {
             // AI autonomously chooses specific topic and approach
-            console.log(`� Category: ${categoryData.category}`);
-            console.log(`🤖 AI choosing specific topic and approach...`);
+            console.log(`📂 Category: ${categoryData.category}`);
             
-            const topicData = await chooseTopicAndApproach(categoryData.category, config);
+            // Fetch recent topics to avoid repetition
+            console.log(`📚 Fetching recent topic history...`);
+            const recentTopics = await getRecentTopics(config);
+            console.log(`📊 Found ${recentTopics.length} recent posts`);
+            
+            console.log(`🤖 AI choosing specific topic and approach...`);
+            const topicData = await chooseTopicAndApproach(categoryData.category, recentTopics, config);
             console.log(`📋 Topic: ${topicData.topic}`);
             console.log(`📝 Type: ${topicData.contentType} (${topicData.depthLevel})`);
             
