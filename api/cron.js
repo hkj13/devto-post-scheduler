@@ -142,26 +142,48 @@ Return as JSON:
     return JSON.parse(response.choices[0].message.content);
 }
 
-// Search for real tech news using web search
+// Search for real tech news using Tavily AI
 async function searchRealTechNews(dateRange) {
+    const tavilyApiKey = process.env.TAVILY_API_KEY;
+    
+    if (!tavilyApiKey) {
+        console.warn('TAVILY_API_KEY not set, skipping real-time news search');
+        return [];
+    }
+    
     const searchQueries = [
-        `tech news ${dateRange} AI machine learning releases`,
-        `developer tools releases ${dateRange}`,
-        `cloud computing AWS Azure GCP news ${dateRange}`,
-        `startup funding rounds ${dateRange}`,
-        `open source releases ${dateRange} GitHub trending`,
+        `latest AI machine learning releases announcements ${dateRange}`,
+        `new developer tools frameworks releases ${dateRange}`,
+        `AWS Azure GCP cloud computing announcements ${dateRange}`,
+        `startup funding rounds acquisitions ${dateRange}`,
+        `trending open source projects GitHub releases ${dateRange}`,
     ];
     
     const allNews = [];
     
     for (const query of searchQueries) {
         try {
-            // Use a simple approach: construct search URL and note that real implementation 
-            // would need actual web scraping or news API
-            const searchUrl = `https://news.ycombinator.com/search?q=${encodeURIComponent(query)}&dateRange=pastWeek`;
-            allNews.push({ query, note: 'Real-time search would be implemented here' });
+            const response = await axios.post('https://api.tavily.com/search', {
+                api_key: tavilyApiKey,
+                query: query,
+                search_depth: 'basic',
+                max_results: 5,
+                include_answer: false,
+                include_raw_content: false,
+            });
+            
+            if (response.data && response.data.results) {
+                for (const result of response.data.results) {
+                    allNews.push({
+                        title: result.title,
+                        url: result.url,
+                        content: result.content,
+                        published_date: result.published_date || 'recent',
+                    });
+                }
+            }
         } catch (error) {
-            console.warn(`Search failed for: ${query}`);
+            console.warn(`Tavily search failed for: ${query}`, error.message);
         }
     }
     
@@ -180,51 +202,55 @@ async function generateWeeklyRecap(config) {
     
     const dateRange = `${lastMonday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${lastSunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
     
+    // Fetch real news from Tavily
+    console.log('🔍 Searching for real tech news...');
+    const realNews = await searchRealTechNews(dateRange);
+    console.log(`📰 Found ${realNews.length} real news articles`);
+    
+    // Build context from real news
+    const newsContext = realNews.length > 0
+        ? `\n\nREAL NEWS ARTICLES FROM THIS WEEK:\n${realNews.map((n, i) => 
+            `${i + 1}. ${n.title}\n   Source: ${n.url}\n   Summary: ${n.content.substring(0, 200)}...`
+        ).join('\n\n')}\n\nUse ONLY the above verified news articles. Do not invent any information.`
+        : '\n\nNo real-time news available. Write about general tech trends instead.';
+    
     const prompt = `CRITICAL: You are creating a FACTUAL tech news recap for ${dateRange}.
+${newsContext}
 
 ⚠️ STRICT RULES - MUST FOLLOW:
-1. DO NOT invent company names, product names, or version numbers
-2. DO NOT make up funding amounts or acquisition details
-3. DO NOT fabricate specific metrics or statistics
-4. If you don't have verified information, write about GENERAL TRENDS instead
-5. Use phrases like "Industry reports suggest..." or "Developers are discussing..." for trends
-6. NEVER claim specific version releases unless you're 100% certain
-
-ACCEPTABLE CONTENT APPROACH:
-Instead of fake news, focus on:
-- General industry trends and discussions in the tech community
-- Ongoing developments in AI, cloud, and developer tools
-- Common challenges developers are facing
-- Emerging patterns in software development
-- Technology adoption trends
+1. Use ONLY the news articles provided above - cite sources with URLs
+2. DO NOT invent any information not in the provided articles
+3. If articles mention specific versions/numbers, include them
+4. Attribute information to sources (e.g., "According to [Source]...")
+5. If no real news is available, write about general trends
 
 STRUCTURE:
-Write a thoughtful analysis of current tech trends and community discussions, NOT fake news announcements.
+Organize the verified news into clear sections:
 
-Sections:
-1. **AI & ML Trends** - What the community is discussing, not fake product launches
-2. **Developer Experience** - Common topics in developer communities
-3. **Cloud & Infrastructure** - General adoption patterns and discussions
-4. **Startup Ecosystem** - Overall funding climate and trends
-5. **Open Source** - Community activity and popular topics
+1. **AI & Machine Learning** - Real announcements from the articles
+2. **Developer Tools** - Actual releases and updates
+3. **Cloud & Infrastructure** - Verified platform updates
+4. **Startups & Funding** - Confirmed funding rounds and acquisitions
+5. **Open Source** - Real project releases and trends
 
 FORMAT:
 1. DEV.TO ARTICLE:
-- Title: "Tech Trends & Community Insights (${dateRange})" - under 60 chars
+- Title: "Weekly Tech Recap: [Key Highlight] (${dateRange})" - under 60 chars
 - Content: 1000-1500 words, markdown
-- Focus on REAL trends, not fabricated news
-- Tags: ["techtrends", "community", "insights", "webdev"]
+- Include source URLs for each news item
+- Organize by sections above
+- Tags: ["weeklyrecap", "technews", "ai", "webdev"]
 
 2. TWITTER THREAD (7-8 tweets):
-- Tweet 1: "� Tech Community Insights (${dateRange}) - What developers are talking about 🧵"
-- Tweets 2-7: One trend/insight per tweet
-- Tweet 8: "What trends are you seeing? #TechCommunity #DevDiscussion"
+- Tweet 1: "🗞️ Weekly Tech Recap (${dateRange}) - Real news from the tech world! 🧵"
+- Tweets 2-7: One verified news item per tweet
+- Tweet 8: "Sources in the full article 👆 #TechNews #WeeklyRecap"
 
 Return as JSON:
 {
   "title": "Article title",
   "content": "Full markdown article...",
-  "tags": ["techtrends", "community", "insights", "webdev"],
+  "tags": ["weeklyrecap", "technews", "ai", "webdev"],
   "thread": ["tweet1", "tweet2", ...]
 }`;
 
