@@ -7,168 +7,24 @@ import { TwitterApi } from 'twitter-api-v2';
  * Self-contained function for serverless environment
  */
 
-// Comprehensive topic categories with detailed subtopics
-const TOPIC_CATEGORIES = {
-    AgenticAI: [
-        "Building autonomous AI agents with LangChain",
-        "Multi-agent systems and coordination patterns",
-        "ReAct pattern: Reasoning and Acting in AI agents",
-        "Tool use and function calling in AI agents",
-        "Agent memory systems: short-term vs long-term",
-        "AutoGPT architecture and self-improving agents",
-        "Agent orchestration frameworks comparison",
-        "Building AI agents with CrewAI",
-        "Agentic RAG: Retrieval-augmented generation for agents",
-        "Agent evaluation and benchmarking methods",
-        "Human-in-the-loop agent systems",
-        "Agent security and sandboxing",
-        "Planning and task decomposition in agents",
-        "Agent debugging and observability",
-        "Production deployment of AI agents",
-    ],
-    GenerativeAI: [
-        "Diffusion models explained: From DDPM to Stable Diffusion",
-        "ControlNet and guided image generation",
-        "Fine-tuning Stable Diffusion with LoRA",
-        "Text-to-video generation: Runway, Pika, Sora",
-        "Audio generation with MusicLM and AudioCraft",
-        "3D generation with NeRF and Gaussian Splatting",
-        "Prompt engineering techniques for image generation",
-        "Inpainting and outpainting techniques",
-        "Style transfer with generative models",
-        "Generative AI for game development",
-        "AI-powered design tools: Figma AI, Canva AI",
-        "Deepfakes detection and ethical AI",
-        "Multimodal generation: text + image + audio",
-        "Real-time generative AI applications",
-        "Generative AI APIs comparison: OpenAI, Anthropic, Google",
-    ],
-    LLM: [
-        "Transformer architecture deep dive",
-        "Attention mechanisms: Self, Cross, Multi-head",
-        "Tokenization strategies: BPE, WordPiece, SentencePiece",
-        "LLM fine-tuning: Full, LoRA, QLoRA techniques",
-        "Prompt engineering: Chain-of-thought, Few-shot, Zero-shot",
-        "RAG implementation patterns and best practices",
-        "Vector databases for LLM applications",
-        "LLM evaluation metrics: Perplexity, BLEU, ROUGE",
-        "Hallucination detection and mitigation",
-        "Context window optimization techniques",
-        "Structured output and JSON mode in LLMs",
-        "LLM inference optimization: Quantization, Pruning",
-        "Serving LLMs at scale: vLLM, TensorRT-LLM",
-        "Open source LLMs: Llama, Mistral, Phi comparison",
-        "Building chatbots with conversation memory",
-        "LLM security: Prompt injection, jailbreaks",
-        "Semantic search and embeddings",
-        "LLM-powered code generation",
-    ],
-    CloudComputing: [
-        "AWS Lambda best practices and patterns",
-        "Kubernetes architecture and components",
-        "Docker containerization strategies",
-        "Serverless vs containers: When to use what",
-        "Multi-cloud architecture patterns",
-        "Cloud cost optimization strategies",
-        "Infrastructure as Code with Terraform",
-        "CI/CD pipelines with GitHub Actions",
-        "Cloud security: IAM, VPC, encryption",
-        "Microservices communication patterns",
-        "Service mesh with Istio and Linkerd",
-        "Cloud-native databases: DynamoDB, Cosmos DB",
-        "Event-driven architecture with Kafka",
-        "API Gateway patterns and rate limiting",
-        "Cloud monitoring with Prometheus and Grafana",
-        "Edge computing and CDN optimization",
-        "Disaster recovery and high availability",
-        "Cloud migration strategies",
-    ],
-    SystemDesign: [
-        "Designing Twitter/X-like social platforms",
-        "Building real-time chat systems",
-        "URL shortener system design",
-        "Rate limiter implementation patterns",
-        "Distributed caching with Redis",
-        "Message queues: RabbitMQ vs Kafka vs SQS",
-        "Database sharding strategies",
-        "CAP theorem and distributed systems",
-        "Load balancing algorithms",
-        "Consistent hashing explained",
-        "CQRS and Event Sourcing patterns",
-        "GraphQL vs REST API design",
-        "WebSocket vs Server-Sent Events",
-        "Designing notification systems",
-        "Search engine architecture",
-        "Video streaming platform design",
-        "Payment system architecture",
-        "Idempotency in distributed systems",
-    ],
-    DataScience: [
-        "Feature engineering best practices",
-        "Time series forecasting techniques",
-        "A/B testing statistical methods",
-        "ML model deployment with MLflow",
-        "Data pipeline with Apache Airflow",
-        "Pandas performance optimization",
-        "Exploratory data analysis workflows",
-        "Handling imbalanced datasets",
-        "Cross-validation strategies",
-        "Hyperparameter tuning: Grid, Random, Bayesian",
-        "Model interpretability: SHAP, LIME",
-        "Data versioning with DVC",
-        "Real-time ML inference patterns",
-        "Feature stores: Feast, Tecton",
-        "MLOps best practices",
-    ],
-    WebDevelopment: [
-        "React Server Components deep dive",
-        "Next.js App Router patterns",
-        "State management: Zustand vs Jotai vs Redux",
-        "TypeScript advanced patterns",
-        "Web performance optimization techniques",
-        "Authentication with NextAuth/Auth.js",
-        "Building design systems",
-        "CSS-in-JS vs Tailwind CSS",
-        "Progressive Web Apps (PWA) guide",
-        "Web accessibility (a11y) essentials",
-        "Testing React apps with Vitest",
-        "Monorepo setup with Turborepo",
-        "Edge functions and middleware",
-        "Real-time apps with WebSockets",
-        "SEO optimization for SPAs",
-    ],
-    ProductManagement: [
-        "Product discovery frameworks",
-        "OKRs vs KPIs: Metrics that matter",
-        "User research interview techniques",
-        "Prioritization: RICE, MoSCoW, Kano",
-        "Building product roadmaps",
-        "A/B testing for product decisions",
-        "Product-led growth strategies",
-        "Stakeholder management techniques",
-        "Writing effective PRDs",
-        "Agile vs Waterfall in 2024",
-        "Jobs-to-be-done framework",
-        "Product analytics tools comparison",
-        "Feature flagging strategies",
-        "Pricing strategy frameworks",
-        "Go-to-market planning",
-    ],
-    DevOps: [
-        "GitOps with ArgoCD and Flux",
-        "Observability: Logs, Metrics, Traces",
-        "SRE practices and error budgets",
-        "Chaos engineering principles",
-        "Blue-green vs Canary deployments",
-        "Secret management with Vault",
-        "Container security scanning",
-        "Performance testing with k6",
-        "Infrastructure monitoring strategies",
-        "Incident management best practices",
-        "Platform engineering principles",
-        "Developer experience (DX) optimization",
-    ],
-};
+// High-level topic categories for AI to explore autonomously
+const TOPIC_CATEGORIES = [
+    "Agentic AI & Autonomous Systems",
+    "Generative AI & Diffusion Models",
+    "Large Language Models (LLMs)",
+    "Cloud Computing & Infrastructure",
+    "System Design & Architecture",
+    "Data Science & Machine Learning",
+    "Web Development & Frontend",
+    "Backend Development & APIs",
+    "Product Management & Strategy",
+    "DevOps & Platform Engineering",
+    "Mobile Development",
+    "Blockchain & Web3",
+    "Cybersecurity",
+    "Database Systems",
+    "Software Testing & QA",
+];
 
 // Configuration from environment
 function getConfig() {
@@ -191,25 +47,17 @@ function getConfig() {
     };
 }
 
-// Get a unique topic using date-based rotation (no repetition)
-function getTopicForToday() {
+// Get category for today using rotation
+function getCategoryForToday() {
     const now = new Date();
     const dayOfWeek = now.getUTCDay(); // 0 = Sunday, 1 = Monday
     
     // Monday = Tech Recap
     if (dayOfWeek === 1) {
-        return { isRecap: true, topic: 'Weekly Tech Recap' };
+        return { isRecap: true };
     }
     
-    // Get all subtopics flattened
-    const allTopics = [];
-    for (const [category, subtopics] of Object.entries(TOPIC_CATEGORIES)) {
-        for (const subtopic of subtopics) {
-            allTopics.push({ category, subtopic });
-        }
-    }
-    
-    // Use day of year + hour to pick unique topic (rotates through all ~150 topics)
+    // Rotate through categories based on date
     const startOfYear = new Date(now.getUTCFullYear(), 0, 0);
     const diff = now - startOfYear;
     const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -217,9 +65,53 @@ function getTopicForToday() {
     
     // Create index based on day and time slot (3 posts per day)
     const timeSlot = hour < 8 ? 0 : hour < 16 ? 1 : 2;
-    const index = (dayOfYear * 3 + timeSlot) % allTopics.length;
+    const index = (dayOfYear * 3 + timeSlot) % TOPIC_CATEGORIES.length;
     
-    return { isRecap: false, ...allTopics[index] };
+    return { isRecap: false, category: TOPIC_CATEGORIES[index] };
+}
+
+// AI autonomously chooses specific topic and approach
+async function chooseTopicAndApproach(category, config) {
+    const openai = new OpenAI({ apiKey: config.openai.apiKey });
+    
+    const prompt = `You are a technical content strategist. Choose a SPECIFIC, IN-DEPTH topic within "${category}".
+
+Requirements:
+1. Pick a specific subtopic that's:
+   - Practical and actionable
+   - Has tutorial/walkthrough potential
+   - Includes code examples or step-by-step guides
+   - Covers recent tools/frameworks (2024-2026)
+
+2. Choose the content type:
+   - "tutorial": Step-by-step guide with code
+   - "deep-dive": Technical explanation with examples
+   - "comparison": Tool/framework comparison with use cases
+   - "best-practices": Patterns and anti-patterns
+   - "case-study": Real-world implementation
+
+3. Define the depth level:
+   - "beginner": Fundamentals with simple examples
+   - "intermediate": Practical implementation details
+   - "advanced": Performance, scaling, edge cases
+
+Return as JSON:
+{
+  "topic": "Specific topic title (e.g., 'Building RAG with LangChain and Pinecone')",
+  "contentType": "tutorial|deep-dive|comparison|best-practices|case-study",
+  "depthLevel": "beginner|intermediate|advanced",
+  "keyPoints": ["point1", "point2", "point3"],
+  "toolsToMention": ["tool1", "tool2"]
+}`;
+
+    const response = await openai.chat.completions.create({
+        model: config.openai.model,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.9, // Higher temperature for more variety
+    });
+
+    return JSON.parse(response.choices[0].message.content);
 }
 
 // Generate Weekly Tech Recap (runs on Mondays)
@@ -274,34 +166,88 @@ Return as JSON:
     return JSON.parse(response.choices[0].message.content);
 }
 
-// Generate article AND thread in single OpenAI call
-async function generateContent(topic, category, config) {
+// Generate content based on AI-chosen topic and approach
+async function generateContent(topicData, config) {
     const openai = new OpenAI({ apiKey: config.openai.apiKey });
     
-    const prompt = `Create DEEP, SPECIFIC content about "${topic}" (Category: ${category}) for two platforms.
+    const contentTypeInstructions = {
+        tutorial: `Create a STEP-BY-STEP TUTORIAL with:
+- Prerequisites and setup instructions
+- Numbered steps with code examples for each
+- Expected output/results after each step
+- Troubleshooting common issues
+- Final working example`,
+        
+        'deep-dive': `Create an IN-DEPTH TECHNICAL EXPLANATION with:
+- How it works under the hood
+- Architecture diagrams (described in text)
+- Code examples showing internals
+- Performance characteristics
+- When to use vs alternatives`,
+        
+        comparison: `Create a DETAILED COMPARISON with:
+- Side-by-side feature comparison table
+- Code examples for each option
+- Use case scenarios for each
+- Pros and cons
+- Recommendation based on needs`,
+        
+        'best-practices': `Create a BEST PRACTICES GUIDE with:
+- Do's and Don'ts with examples
+- Common anti-patterns to avoid
+- Code examples of good vs bad
+- Real-world scenarios
+- Checklist for implementation`,
+        
+        'case-study': `Create a REAL-WORLD CASE STUDY with:
+- Problem statement
+- Solution architecture
+- Implementation details with code
+- Challenges faced and solutions
+- Results and metrics`
+    };
+    
+    const depthInstructions = {
+        beginner: "Explain concepts from scratch. Include definitions, simple examples, and avoid jargon.",
+        intermediate: "Assume basic knowledge. Focus on practical implementation, patterns, and real-world usage.",
+        advanced: "Cover edge cases, performance optimization, scaling, and production considerations."
+    };
+    
+    const prompt = `Create content about: "${topicData.topic}"
 
-IMPORTANT: This should be an IN-DEPTH technical article, not a surface-level overview.
-- Include specific code examples, commands, or configurations
-- Cover practical use cases and real-world scenarios
-- Mention specific tools, libraries, or services by name
-- Include tips, gotchas, and best practices
+CONTENT TYPE: ${topicData.contentType}
+${contentTypeInstructions[topicData.contentType]}
+
+DEPTH LEVEL: ${topicData.depthLevel}
+${depthInstructions[topicData.depthLevel]}
+
+KEY POINTS TO COVER:
+${topicData.keyPoints.map((p, i) => `${i + 1}. ${p}`).join('\n')}
+
+TOOLS/FRAMEWORKS TO MENTION: ${topicData.toolsToMention.join(', ')}
+
+FORMAT FOR TWO PLATFORMS:
 
 1. DEV.TO ARTICLE:
-- Title: Specific and actionable, under 60 characters
-- Content: 1000-1500 words, markdown, multiple code examples
+- Title: Actionable and specific, under 60 characters
+- Content: 1200-1800 words, markdown format
+- Include 3-5 code blocks with syntax highlighting
+- Add a "What You'll Learn" section at the start
+- Include a "Next Steps" section at the end
 - Tags: 4 relevant tags (lowercase, no spaces)
 
-2. TWITTER THREAD (5-6 tweets from the same content):
-- Tweet 1: Hook with emoji, mention "thread 🧵"
-- Tweets 2-5: Key insights/tips from the article (max 270 chars each)
-- Tweet 6: Call-to-action with hashtags
+2. TWITTER THREAD (6-8 tweets):
+- Tweet 1: Hook with emoji + "A thread 🧵"
+- Tweets 2-6: Key takeaways with code snippets (max 270 chars)
+- Tweet 7: "Want to learn more?" + link placeholder
+- Tweet 8: Hashtags and call-to-action
 
 Return as JSON:
 {
   "title": "Article title",
   "content": "Full markdown article...",
   "tags": ["tag1", "tag2", "tag3", "tag4"],
-  "thread": ["tweet1", "tweet2", "tweet3", "tweet4", "tweet5", "tweet6"]
+  "thread": ["tweet1", "tweet2", "tweet3", "tweet4", "tweet5", "tweet6", "tweet7", "tweet8"]
 }`;
 
     const response = await openai.chat.completions.create({
@@ -392,19 +338,32 @@ export default async function handler(req, res) {
 
         console.log(`📱 Enabled platforms: ${enabledPlatforms.join(', ')}`);
 
-        // Get topic for today (uses date-based rotation to avoid repetition)
-        const topicData = getTopicForToday();
-        let content;
+        // Get category for today (uses date-based rotation)
+        const categoryData = getCategoryForToday();
+        let content, topicInfo;
         
-        if (topicData.isRecap) {
+        if (categoryData.isRecap) {
             // Monday = Weekly Tech Recap
             console.log(`📰 Generating Weekly Tech Recap...`);
             content = await generateWeeklyRecap(config);
+            topicInfo = { type: 'weekly_recap', category: 'recap', topic: 'Weekly Tech Recap' };
         } else {
-            // Regular topic-based content
-            console.log(`📋 Category: ${topicData.category}`);
-            console.log(`📋 Topic: ${topicData.subtopic}`);
-            content = await generateContent(topicData.subtopic, topicData.category, config);
+            // AI autonomously chooses specific topic and approach
+            console.log(`� Category: ${categoryData.category}`);
+            console.log(`🤖 AI choosing specific topic and approach...`);
+            
+            const topicData = await chooseTopicAndApproach(categoryData.category, config);
+            console.log(`📋 Topic: ${topicData.topic}`);
+            console.log(`📝 Type: ${topicData.contentType} (${topicData.depthLevel})`);
+            
+            content = await generateContent(topicData, config);
+            topicInfo = { 
+                type: 'autonomous', 
+                category: categoryData.category, 
+                topic: topicData.topic,
+                contentType: topicData.contentType,
+                depthLevel: topicData.depthLevel
+            };
         }
         
         console.log(`✅ Generated: "${content.title}"`);
@@ -438,9 +397,7 @@ export default async function handler(req, res) {
 
         return res.status(200).json({
             success: true,
-            type: topicData.isRecap ? 'weekly_recap' : 'topic',
-            category: topicData.category || 'recap',
-            topic: topicData.subtopic || 'Weekly Tech Recap',
+            ...topicInfo,
             title: content.title,
             platforms: results
         });
