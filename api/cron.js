@@ -47,18 +47,26 @@ function getConfig() {
     };
 }
 
-// Get category for today using rotation
-function getCategoryForToday() {
+// Post types for daily rotation
+const POST_TYPES = ['latest_news', 'tutorial', 'case_study'];
+
+// Get post schedule for today
+// Pattern: 
+//   - Slot 0 (morning): Latest News (uses Tavily - 1 credit)
+//   - Slot 1 (afternoon): Tutorial (structured: "Category - Topic - Explained")
+//   - Slot 2 (evening): Case Study (real-world implementation)
+//   - Monday Slot 0: Weekly Recap (uses Tavily - 5 credits)
+function getPostSchedule() {
     const now = new Date();
     const dayOfWeek = now.getUTCDay(); // 0 = Sunday, 1 = Monday
     const hour = now.getUTCHours();
     
-    // Monday first post (before 8 AM UTC) = Tech Recap
-    // Other Monday posts = regular topics
+    // Determine time slot: 0 = morning, 1 = afternoon, 2 = evening
     const timeSlot = hour < 8 ? 0 : hour < 16 ? 1 : 2;
     
+    // Monday first post = Weekly Recap
     if (dayOfWeek === 1 && timeSlot === 0) {
-        return { isRecap: true };
+        return { postType: 'weekly_recap', isRecap: true };
     }
     
     // Rotate through categories based on date
@@ -66,10 +74,20 @@ function getCategoryForToday() {
     const diff = now - startOfYear;
     const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
     
-    // Create index based on day and time slot (3 posts per day)
-    const index = (dayOfYear * 3 + timeSlot) % TOPIC_CATEGORIES.length;
+    // Pick category (rotates daily through all categories)
+    const categoryIndex = dayOfYear % TOPIC_CATEGORIES.length;
+    const category = TOPIC_CATEGORIES[categoryIndex];
     
-    return { isRecap: false, category: TOPIC_CATEGORIES[index] };
+    // Pick post type based on time slot
+    const postType = POST_TYPES[timeSlot];
+    
+    return { 
+        postType, 
+        category, 
+        isRecap: false,
+        timeSlot,
+        dayOfYear 
+    };
 }
 
 // Get recent topic history from Dev.to API
@@ -143,7 +161,8 @@ Return as JSON:
 }
 
 // Search for real tech news using Tavily AI
-async function searchRealTechNews(dateRange) {
+// Tavily's `days` parameter filters results from the last N days
+async function searchTavilyNews(category, days = 7) {
     const tavilyApiKey = process.env.TAVILY_API_KEY;
     
     if (!tavilyApiKey) {
@@ -151,40 +170,62 @@ async function searchRealTechNews(dateRange) {
         return [];
     }
     
-    const searchQueries = [
-        `latest AI machine learning releases announcements ${dateRange}`,
-        `new developer tools frameworks releases ${dateRange}`,
-        `AWS Azure GCP cloud computing announcements ${dateRange}`,
-        `startup funding rounds acquisitions ${dateRange}`,
-        `trending open source projects GitHub releases ${dateRange}`,
+    const categoryQueries = {
+        'AI & Machine Learning': 'AI artificial intelligence machine learning LLM GPT releases announcements news',
+        'Cloud & DevOps': 'AWS Azure GCP Kubernetes Docker cloud infrastructure announcements',
+        'Web Development': 'React Next.js Vue JavaScript TypeScript frontend web development releases',
+        'Mobile Development': 'iOS Android Flutter React Native mobile app development news',
+        'Cybersecurity': 'cybersecurity vulnerabilities CVE security breach hacking news',
+        'Data & Analytics': 'data engineering analytics BigQuery Snowflake data pipeline news',
+        'Blockchain & Web3': 'blockchain crypto Web3 Ethereum smart contracts DeFi news',
+        'DevTools': 'developer tools IDE VS Code GitHub GitLab releases',
+        'Startups': 'startup funding Series A B C acquisition tech startup news',
+        'Open Source': 'open source GitHub trending new releases projects',
+    };
+    
+    const query = categoryQueries[category] || `${category} latest news announcements`;
+    
+    try {
+        const response = await axios.post('https://api.tavily.com/search', {
+            api_key: tavilyApiKey,
+            query: query,
+            search_depth: 'basic',
+            max_results: 5,
+            days: days, // Filter: only results from last N days
+            include_answer: false,
+            include_raw_content: false,
+        });
+        
+        if (response.data && response.data.results) {
+            return response.data.results.map(result => ({
+                title: result.title,
+                url: result.url,
+                content: result.content,
+                published_date: result.published_date || 'recent',
+            }));
+        }
+    } catch (error) {
+        console.warn(`Tavily search failed for ${category}:`, error.message);
+    }
+    
+    return [];
+}
+
+// Search multiple categories for weekly recap (5 searches = 5 credits)
+async function searchWeeklyNews() {
+    const categories = [
+        'AI & Machine Learning',
+        'DevTools',
+        'Cloud & DevOps',
+        'Startups',
+        'Open Source',
     ];
     
     const allNews = [];
     
-    for (const query of searchQueries) {
-        try {
-            const response = await axios.post('https://api.tavily.com/search', {
-                api_key: tavilyApiKey,
-                query: query,
-                search_depth: 'basic',
-                max_results: 5,
-                include_answer: false,
-                include_raw_content: false,
-            });
-            
-            if (response.data && response.data.results) {
-                for (const result of response.data.results) {
-                    allNews.push({
-                        title: result.title,
-                        url: result.url,
-                        content: result.content,
-                        published_date: result.published_date || 'recent',
-                    });
-                }
-            }
-        } catch (error) {
-            console.warn(`Tavily search failed for: ${query}`, error.message);
-        }
+    for (const category of categories) {
+        const news = await searchTavilyNews(category, 7); // Last 7 days
+        allNews.push(...news.map(n => ({ ...n, category })));
     }
     
     return allNews;
@@ -202,9 +243,9 @@ async function generateWeeklyRecap(config) {
     
     const dateRange = `${lastMonday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${lastSunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
     
-    // Fetch real news from Tavily
-    console.log('🔍 Searching for real tech news...');
-    const realNews = await searchRealTechNews(dateRange);
+    // Fetch real news from Tavily (5 searches = 5 credits)
+    console.log('🔍 Searching for real tech news from last 7 days...');
+    const realNews = await searchWeeklyNews();
     console.log(`📰 Found ${realNews.length} real news articles`);
     
     // Build context from real news
@@ -357,6 +398,173 @@ Return as JSON:
     return JSON.parse(response.choices[0].message.content);
 }
 
+// Generate Latest News post for a specific category (1 Tavily credit)
+async function generateLatestNews(category, config) {
+    const openai = new OpenAI({ apiKey: config.openai.apiKey });
+    
+    // Fetch real news for this category (1 credit)
+    console.log(`🔍 Searching latest ${category} news...`);
+    const news = await searchTavilyNews(category, 3); // Last 3 days for freshness
+    console.log(`📰 Found ${news.length} news articles`);
+    
+    const newsContext = news.length > 0
+        ? `REAL NEWS ARTICLES:\n${news.map((n, i) => 
+            `${i + 1}. ${n.title}\n   Source: ${n.url}\n   Summary: ${n.content.substring(0, 300)}...`
+        ).join('\n\n')}\n\nUse ONLY these verified articles.`
+        : 'No real-time news found. Write about recent developments and trends instead.';
+    
+    const prompt = `Create a NEWS UPDATE article about the latest in "${category}".
+
+${newsContext}
+
+⚠️ RULES:
+1. Use ONLY the news articles above - cite sources
+2. DO NOT invent information
+3. Include source URLs
+4. If no news available, discuss recent industry trends
+
+FORMAT:
+1. DEV.TO ARTICLE:
+- Title: "${category}: Latest News & Updates" or similar, under 60 chars
+- Content: 800-1200 words, markdown
+- Include source links
+- Tags: ["news", category-related tags]
+
+2. TWITTER THREAD (5-6 tweets):
+- Tweet 1: "🚀 Latest in ${category}! Here's what's happening 🧵"
+- Tweets 2-5: Key news items
+- Tweet 6: "Follow for daily tech updates! #TechNews"
+
+Return as JSON:
+{
+  "title": "Article title",
+  "content": "Full markdown article...",
+  "tags": ["news", "tag2", "tag3", "tag4"],
+  "thread": ["tweet1", "tweet2", ...]
+}`;
+
+    const response = await openai.chat.completions.create({
+        model: config.openai.model,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+    });
+
+    return JSON.parse(response.choices[0].message.content);
+}
+
+// Generate Tutorial post with structured naming
+async function generateTutorial(category, recentTopics, config) {
+    const openai = new OpenAI({ apiKey: config.openai.apiKey });
+    
+    const recentTitles = recentTopics.map(t => `- ${t.title}`).join('\n');
+    
+    const prompt = `You are creating a TUTORIAL article for "${category}".
+
+RECENT POSTS TO AVOID:
+${recentTitles || 'None'}
+
+TITLE FORMAT (IMPORTANT):
+Use this searchable structure: "[Technology] - [Specific Topic] - Explained/Tutorial/Guide"
+Examples:
+- "Python - List Comprehensions - Explained"
+- "React - Custom Hooks - Complete Tutorial"
+- "Docker - Multi-Stage Builds - Guide"
+- "Machine Learning - Feature Engineering - Explained"
+- "AWS - Lambda Functions - Step by Step"
+
+REQUIREMENTS:
+1. Pick a specific, actionable topic NOT in recent posts
+2. Write for intermediate developers
+3. Include 4-6 code examples
+4. Step-by-step instructions
+5. Practical use cases
+
+FORMAT:
+1. DEV.TO ARTICLE:
+- Title: Follow the "[Tech] - [Topic] - Type" format, under 60 chars
+- Content: 1200-1800 words, markdown
+- Sections: Introduction, Prerequisites, Step-by-Step, Code Examples, Best Practices, Conclusion
+- Tags: 4 relevant tags
+
+2. TWITTER THREAD (6-8 tweets):
+- Tweet 1: "📚 [Topic] Tutorial - A thread 🧵"
+- Tweets 2-6: Key concepts with code
+- Tweet 7-8: Call to action + hashtags
+
+Return as JSON:
+{
+  "title": "Article title in structured format",
+  "content": "Full markdown article...",
+  "tags": ["tutorial", "tag2", "tag3", "tag4"],
+  "thread": ["tweet1", "tweet2", ...]
+}`;
+
+    const response = await openai.chat.completions.create({
+        model: config.openai.model,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.8,
+    });
+
+    return JSON.parse(response.choices[0].message.content);
+}
+
+// Generate Case Study post
+async function generateCaseStudy(category, recentTopics, config) {
+    const openai = new OpenAI({ apiKey: config.openai.apiKey });
+    
+    const recentTitles = recentTopics.map(t => `- ${t.title}`).join('\n');
+    
+    const prompt = `Create a CASE STUDY article for "${category}".
+
+RECENT POSTS TO AVOID:
+${recentTitles || 'None'}
+
+CASE STUDY REQUIREMENTS:
+1. Real-world problem scenario
+2. Technical solution with architecture
+3. Implementation code snippets
+4. Challenges and how they were solved
+5. Results and lessons learned
+
+TITLE FORMAT:
+- "Building [X]: A [Category] Case Study"
+- "How We [Achieved X] with [Technology]"
+- "[Problem]: A Real-World [Category] Solution"
+
+FORMAT:
+1. DEV.TO ARTICLE:
+- Title: Compelling case study title, under 60 chars
+- Content: 1500-2000 words, markdown
+- Sections: The Problem, Our Approach, Implementation, Challenges, Results, Key Takeaways
+- Include architecture diagrams (text-based)
+- 3-5 code examples
+- Tags: 4 relevant tags including "casestudy"
+
+2. TWITTER THREAD (7-8 tweets):
+- Tweet 1: "🏗️ Case Study: [Problem] - How we solved it 🧵"
+- Tweets 2-6: Key implementation points
+- Tweet 7-8: Results + lessons learned
+
+Return as JSON:
+{
+  "title": "Article title",
+  "content": "Full markdown article...",
+  "tags": ["casestudy", "tag2", "tag3", "tag4"],
+  "thread": ["tweet1", "tweet2", ...]
+}`;
+
+    const response = await openai.chat.completions.create({
+        model: config.openai.model,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.8,
+    });
+
+    return JSON.parse(response.choices[0].message.content);
+}
+
 // Post to Dev.to
 async function postToDevto(article, config) {
     const response = await axios.post(
@@ -436,37 +644,68 @@ export default async function handler(req, res) {
 
         console.log(`📱 Enabled platforms: ${enabledPlatforms.join(', ')}`);
 
-        // Get category for today (uses date-based rotation)
-        const categoryData = getCategoryForToday();
+        // Get post schedule for today
+        const schedule = getPostSchedule();
         let content, topicInfo;
         
-        if (categoryData.isRecap) {
-            // Monday = Weekly Tech Recap
-            console.log(`📰 Generating Weekly Tech Recap...`);
-            content = await generateWeeklyRecap(config);
-            topicInfo = { type: 'weekly_recap', category: 'recap', topic: 'Weekly Tech Recap' };
-        } else {
-            // AI autonomously chooses specific topic and approach
-            console.log(`📂 Category: ${categoryData.category}`);
-            
-            // Fetch recent topics to avoid repetition
-            console.log(`📚 Fetching recent topic history...`);
-            const recentTopics = await getRecentTopics(config);
-            console.log(`📊 Found ${recentTopics.length} recent posts`);
-            
-            console.log(`🤖 AI choosing specific topic and approach...`);
-            const topicData = await chooseTopicAndApproach(categoryData.category, recentTopics, config);
-            console.log(`📋 Topic: ${topicData.topic}`);
-            console.log(`📝 Type: ${topicData.contentType} (${topicData.depthLevel})`);
-            
-            content = await generateContent(topicData, config);
-            topicInfo = { 
-                type: 'autonomous', 
-                category: categoryData.category, 
-                topic: topicData.topic,
-                contentType: topicData.contentType,
-                depthLevel: topicData.depthLevel
-            };
+        console.log(`📅 Post Type: ${schedule.postType}`);
+        if (schedule.category) console.log(`📂 Category: ${schedule.category}`);
+        
+        // Fetch recent topics to avoid repetition (for tutorials and case studies)
+        const recentTopics = await getRecentTopics(config);
+        console.log(`📊 Found ${recentTopics.length} recent posts`);
+        
+        switch (schedule.postType) {
+            case 'weekly_recap':
+                // Monday morning = Weekly Tech Recap (5 Tavily credits)
+                console.log(`📰 Generating Weekly Tech Recap...`);
+                content = await generateWeeklyRecap(config);
+                topicInfo = { 
+                    type: 'weekly_recap', 
+                    category: 'recap', 
+                    topic: 'Weekly Tech Recap',
+                    tavilyCredits: 5
+                };
+                break;
+                
+            case 'latest_news':
+                // Morning = Latest News (1 Tavily credit)
+                console.log(`�️ Generating Latest News for ${schedule.category}...`);
+                content = await generateLatestNews(schedule.category, config);
+                topicInfo = { 
+                    type: 'latest_news', 
+                    category: schedule.category, 
+                    topic: `${schedule.category} News`,
+                    tavilyCredits: 1
+                };
+                break;
+                
+            case 'tutorial':
+                // Afternoon = Tutorial (no Tavily)
+                console.log(`📚 Generating Tutorial for ${schedule.category}...`);
+                content = await generateTutorial(schedule.category, recentTopics, config);
+                topicInfo = { 
+                    type: 'tutorial', 
+                    category: schedule.category, 
+                    topic: content.title,
+                    tavilyCredits: 0
+                };
+                break;
+                
+            case 'case_study':
+                // Evening = Case Study (no Tavily)
+                console.log(`🏗️ Generating Case Study for ${schedule.category}...`);
+                content = await generateCaseStudy(schedule.category, recentTopics, config);
+                topicInfo = { 
+                    type: 'case_study', 
+                    category: schedule.category, 
+                    topic: content.title,
+                    tavilyCredits: 0
+                };
+                break;
+                
+            default:
+                throw new Error(`Unknown post type: ${schedule.postType}`);
         }
         
         console.log(`✅ Generated: "${content.title}"`);
