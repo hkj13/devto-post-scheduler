@@ -51,9 +51,13 @@ function getConfig() {
 function getCategoryForToday() {
     const now = new Date();
     const dayOfWeek = now.getUTCDay(); // 0 = Sunday, 1 = Monday
+    const hour = now.getUTCHours();
     
-    // Monday = Tech Recap
-    if (dayOfWeek === 1) {
+    // Monday first post (before 8 AM UTC) = Tech Recap
+    // Other Monday posts = regular topics
+    const timeSlot = hour < 8 ? 0 : hour < 16 ? 1 : 2;
+    
+    if (dayOfWeek === 1 && timeSlot === 0) {
         return { isRecap: true };
     }
     
@@ -61,10 +65,8 @@ function getCategoryForToday() {
     const startOfYear = new Date(now.getUTCFullYear(), 0, 0);
     const diff = now - startOfYear;
     const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hour = now.getUTCHours();
     
     // Create index based on day and time slot (3 posts per day)
-    const timeSlot = hour < 8 ? 0 : hour < 16 ? 1 : 2;
     const index = (dayOfYear * 3 + timeSlot) % TOPIC_CATEGORIES.length;
     
     return { isRecap: false, category: TOPIC_CATEGORIES[index] };
