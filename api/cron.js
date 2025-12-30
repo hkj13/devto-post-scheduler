@@ -9,22 +9,80 @@ import { TwitterApi } from 'twitter-api-v2';
 
 // High-level topic categories for AI to explore autonomously
 const TOPIC_CATEGORIES = [
-    "Agentic AI & Autonomous Systems",
-    "Generative AI & Diffusion Models",
+    // AI & ML Deep Dives
+    "Agentic AI & Autonomous Agents",
+    "Generative AI & Diffusion Models", 
     "Large Language Models (LLMs)",
+    "RAG & Vector Databases",
+    "Fine-tuning & Model Optimization",
+    "Prompt Engineering & AI Workflows",
+    
+    // Quantum Computing
+    "Quantum Computing & Quantum ML",
+    
+    // Data Science
+    "Data Science & Analytics",
+    "Machine Learning Engineering",
+    "MLOps & Model Deployment",
+    "Feature Engineering & Data Pipelines",
+    
+    // Product & Business
+    "Product Management & Strategy",
+    "Product Analytics & Metrics",
+    "Growth Engineering",
+    
+    // Development
     "Cloud Computing & Infrastructure",
     "System Design & Architecture",
-    "Data Science & Machine Learning",
     "Web Development & Frontend",
     "Backend Development & APIs",
-    "Product Management & Strategy",
     "DevOps & Platform Engineering",
-    "Mobile Development",
-    "Blockchain & Web3",
-    "Cybersecurity",
-    "Database Systems",
-    "Software Testing & QA",
+    "Database Systems & Data Modeling",
 ];
+
+// Detailed subtopics for focused content
+const SUBTOPICS = {
+    "Agentic AI & Autonomous Agents": [
+        "Multi-agent systems", "Agent orchestration", "Tool use & function calling",
+        "ReAct pattern", "AutoGPT architecture", "CrewAI & LangGraph",
+        "Agent memory systems", "Planning & reasoning", "Agent evaluation"
+    ],
+    "Generative AI & Diffusion Models": [
+        "Stable Diffusion", "DALL-E & Midjourney", "ControlNet & LoRA",
+        "Image generation pipelines", "Video generation (Sora, Runway)",
+        "Audio generation", "3D generation", "Inpainting & outpainting"
+    ],
+    "Large Language Models (LLMs)": [
+        "GPT-4 & Claude architecture", "Llama & open-source LLMs", "Gemini & PaLM",
+        "Tokenization", "Attention mechanisms", "Context windows",
+        "Inference optimization", "Quantization (GGUF, GPTQ)", "Serving LLMs"
+    ],
+    "RAG & Vector Databases": [
+        "Retrieval-Augmented Generation", "Pinecone & Weaviate", "ChromaDB & Milvus",
+        "Embedding models", "Chunking strategies", "Hybrid search",
+        "Reranking", "Knowledge graphs + RAG", "Evaluation metrics"
+    ],
+    "Prompt Engineering & AI Workflows": [
+        "Chain-of-thought prompting", "Few-shot learning", "System prompts",
+        "LangChain & LlamaIndex", "Prompt templates", "Output parsing",
+        "Structured outputs", "Guardrails & safety"
+    ],
+    "Quantum Computing & Quantum ML": [
+        "Quantum basics for developers", "Qiskit & Cirq", "Quantum algorithms",
+        "Quantum machine learning", "Variational circuits", "Quantum advantage",
+        "Hybrid classical-quantum", "Quantum error correction"
+    ],
+    "Data Science & Analytics": [
+        "Exploratory data analysis", "Statistical modeling", "A/B testing",
+        "Causal inference", "Time series analysis", "Anomaly detection",
+        "Customer segmentation", "Churn prediction", "Recommendation systems"
+    ],
+    "Product Management & Strategy": [
+        "Product discovery", "User research", "Roadmap planning",
+        "Prioritization frameworks", "OKRs & KPIs", "Go-to-market strategy",
+        "Product-led growth", "Feature flags", "Experimentation"
+    ],
+};
 
 // Configuration from environment
 function getConfig() {
@@ -171,16 +229,35 @@ async function searchTavilyNews(category, days = 7) {
     }
     
     const categoryQueries = {
-        'AI & Machine Learning': 'AI artificial intelligence machine learning LLM GPT releases announcements news',
-        'Cloud & DevOps': 'AWS Azure GCP Kubernetes Docker cloud infrastructure announcements',
-        'Web Development': 'React Next.js Vue JavaScript TypeScript frontend web development releases',
-        'Mobile Development': 'iOS Android Flutter React Native mobile app development news',
-        'Cybersecurity': 'cybersecurity vulnerabilities CVE security breach hacking news',
-        'Data & Analytics': 'data engineering analytics BigQuery Snowflake data pipeline news',
-        'Blockchain & Web3': 'blockchain crypto Web3 Ethereum smart contracts DeFi news',
-        'DevTools': 'developer tools IDE VS Code GitHub GitLab releases',
-        'Startups': 'startup funding Series A B C acquisition tech startup news',
-        'Open Source': 'open source GitHub trending new releases projects',
+        // AI & ML Categories
+        'Agentic AI & Autonomous Agents': 'agentic AI autonomous agents multi-agent LangGraph CrewAI AutoGPT news',
+        'Generative AI & Diffusion Models': 'generative AI Stable Diffusion DALL-E Midjourney Sora image video generation news',
+        'Large Language Models (LLMs)': 'LLM GPT-4 Claude Gemini Llama open source language model releases news',
+        'RAG & Vector Databases': 'RAG retrieval augmented generation Pinecone Weaviate vector database news',
+        'Fine-tuning & Model Optimization': 'LLM fine-tuning LoRA QLoRA model optimization quantization news',
+        'Prompt Engineering & AI Workflows': 'prompt engineering LangChain LlamaIndex AI workflows news',
+        
+        // Quantum
+        'Quantum Computing & Quantum ML': 'quantum computing IBM Quantum Google Sycamore quantum machine learning news',
+        
+        // Data Science
+        'Data Science & Analytics': 'data science analytics machine learning Pandas scikit-learn news',
+        'Machine Learning Engineering': 'MLOps machine learning engineering PyTorch TensorFlow deployment news',
+        'MLOps & Model Deployment': 'MLOps model deployment Kubeflow MLflow model serving news',
+        'Feature Engineering & Data Pipelines': 'feature engineering data pipelines Airflow dbt data engineering news',
+        
+        // Product
+        'Product Management & Strategy': 'product management strategy product-led growth roadmap prioritization news',
+        'Product Analytics & Metrics': 'product analytics metrics A/B testing experimentation Amplitude Mixpanel news',
+        'Growth Engineering': 'growth engineering growth hacking product growth viral loops news',
+        
+        // Development
+        'Cloud Computing & Infrastructure': 'AWS Azure GCP cloud infrastructure serverless Kubernetes news',
+        'System Design & Architecture': 'system design architecture microservices distributed systems scaling news',
+        'Web Development & Frontend': 'React Next.js Vue JavaScript TypeScript frontend web development news',
+        'Backend Development & APIs': 'backend API Node.js Python Go REST GraphQL microservices news',
+        'DevOps & Platform Engineering': 'DevOps platform engineering CI/CD Terraform infrastructure as code news',
+        'Database Systems & Data Modeling': 'database PostgreSQL MongoDB Redis data modeling schema design news',
     };
     
     const query = categoryQueries[category] || `${category} latest news announcements`;
@@ -510,47 +587,109 @@ Return as JSON:
     return JSON.parse(response.choices[0].message.content);
 }
 
-// Generate Case Study post
+// Search for real company case studies via Tavily (1 credit)
+async function searchRealCaseStudies(category) {
+    const tavilyApiKey = process.env.TAVILY_API_KEY;
+    
+    if (!tavilyApiKey) {
+        console.warn('TAVILY_API_KEY not set, skipping case study search');
+        return [];
+    }
+    
+    const companyKeywords = {
+        "Agentic AI & Autonomous Agents": "OpenAI GPT agents Anthropic Claude autonomous AI implementation case study",
+        "Generative AI & Diffusion Models": "Stability AI Midjourney Adobe Firefly generative AI implementation",
+        "Large Language Models (LLMs)": "OpenAI ChatGPT Anthropic Claude Google Gemini LLM deployment case study",
+        "RAG & Vector Databases": "Pinecone Weaviate company RAG implementation vector search case study",
+        "Quantum Computing & Quantum ML": "IBM Quantum Google Sycamore IonQ quantum computing implementation",
+        "Data Science & Analytics": "Netflix Spotify Airbnb data science machine learning case study",
+        "Product Management & Strategy": "Stripe Notion Figma product management growth case study",
+        "Cloud Computing & Infrastructure": "AWS Azure GCP migration case study infrastructure",
+        "System Design & Architecture": "Netflix Uber Airbnb system design architecture scaling",
+    };
+    
+    const query = companyKeywords[category] || `${category} real company case study implementation`;
+    
+    try {
+        const response = await axios.post('https://api.tavily.com/search', {
+            api_key: tavilyApiKey,
+            query: query,
+            search_depth: 'basic',
+            max_results: 5,
+            days: 365, // Case studies can be from the past year
+            include_answer: false,
+            include_raw_content: false,
+        });
+        
+        if (response.data && response.data.results) {
+            return response.data.results.map(result => ({
+                title: result.title,
+                url: result.url,
+                content: result.content,
+            }));
+        }
+    } catch (error) {
+        console.warn(`Tavily case study search failed:`, error.message);
+    }
+    
+    return [];
+}
+
+// Generate Case Study post using REAL company examples (1 Tavily credit)
 async function generateCaseStudy(category, recentTopics, config) {
     const openai = new OpenAI({ apiKey: config.openai.apiKey });
     
+    // Search for real case studies (1 credit)
+    console.log(`🔍 Searching real ${category} case studies...`);
+    const realCaseStudies = await searchRealCaseStudies(category);
+    console.log(`📚 Found ${realCaseStudies.length} real case studies`);
+    
+    const caseStudyContext = realCaseStudies.length > 0
+        ? `REAL COMPANY CASE STUDIES TO REFERENCE:\n${realCaseStudies.map((cs, i) => 
+            `${i + 1}. ${cs.title}\n   Source: ${cs.url}\n   Summary: ${cs.content.substring(0, 400)}...`
+        ).join('\n\n')}\n\nIMPORTANT: Write about ONE of these REAL companies. Use verified facts from the sources.`
+        : 'No real case studies found. Use well-known public examples from major tech companies.';
+    
     const recentTitles = recentTopics.map(t => `- ${t.title}`).join('\n');
     
-    const prompt = `Create a CASE STUDY article for "${category}".
+    const prompt = `Create a CASE STUDY article about a REAL company for "${category}".
+
+${caseStudyContext}
 
 RECENT POSTS TO AVOID:
 ${recentTitles || 'None'}
 
-CASE STUDY REQUIREMENTS:
-1. Real-world problem scenario
-2. Technical solution with architecture
-3. Implementation code snippets
-4. Challenges and how they were solved
-5. Results and lessons learned
+⚠️ CRITICAL RULES:
+1. Write about a REAL company from the search results above
+2. Use VERIFIED facts and cite sources
+3. DO NOT invent metrics, numbers, or company names
+4. Include the source URL in the article
+5. Focus on publicly available technical details
 
-TITLE FORMAT:
-- "Building [X]: A [Category] Case Study"
-- "How We [Achieved X] with [Technology]"
-- "[Problem]: A Real-World [Category] Solution"
+WELL-KNOWN COMPANIES TO CONSIDER (if no search results):
+- AI/ML: OpenAI, Anthropic, Google DeepMind, Meta AI
+- Data: Netflix, Spotify, Airbnb, Uber, LinkedIn
+- Infrastructure: Stripe, Cloudflare, Datadog
+- Product: Notion, Figma, Slack, Discord
 
 FORMAT:
 1. DEV.TO ARTICLE:
-- Title: Compelling case study title, under 60 chars
+- Title: "How [Company] Built [X]: A ${category} Case Study" - under 60 chars
 - Content: 1500-2000 words, markdown
-- Sections: The Problem, Our Approach, Implementation, Challenges, Results, Key Takeaways
-- Include architecture diagrams (text-based)
-- 3-5 code examples
-- Tags: 4 relevant tags including "casestudy"
+- Sections: About [Company], The Challenge, Technical Solution, Implementation, Results, Lessons Learned
+- Include source citations with URLs
+- 2-3 code examples (based on public info)
+- Tags: ["casestudy", company-name, technology tags]
 
-2. TWITTER THREAD (7-8 tweets):
-- Tweet 1: "🏗️ Case Study: [Problem] - How we solved it 🧵"
-- Tweets 2-6: Key implementation points
-- Tweet 7-8: Results + lessons learned
+2. TWITTER THREAD (6-7 tweets, max 250 chars each):
+- Tweet 1: "� How [Company] solved [X] - A thread 🧵"
+- Tweets 2-5: Key technical decisions (short, punchy)
+- Tweet 6-7: Results + source link
 
 Return as JSON:
 {
   "title": "Article title",
-  "content": "Full markdown article...",
+  "content": "Full markdown article with source citations...",
   "tags": ["casestudy", "tag2", "tag3", "tag4"],
   "thread": ["tweet1", "tweet2", ...]
 }`;
@@ -559,7 +698,7 @@ Return as JSON:
         model: config.openai.model,
         messages: [{ role: 'user', content: prompt }],
         response_format: { type: 'json_object' },
-        temperature: 0.8,
+        temperature: 0.7, // Lower for more factual content
     });
 
     return JSON.parse(response.choices[0].message.content);
@@ -587,6 +726,41 @@ async function postToDevto(article, config) {
     return { platform: 'devto', url: response.data.url, id: response.data.id };
 }
 
+// Split long tweet into multiple tweets (handles cut-off issue)
+function splitTweet(text, maxLength = 275) {
+    if (text.length <= maxLength) return [text];
+    
+    const tweets = [];
+    let remaining = text;
+    
+    while (remaining.length > 0) {
+        if (remaining.length <= maxLength) {
+            tweets.push(remaining);
+            break;
+        }
+        
+        // Find a good break point (space, punctuation)
+        let breakPoint = maxLength;
+        const lastSpace = remaining.lastIndexOf(' ', maxLength);
+        const lastPeriod = remaining.lastIndexOf('. ', maxLength);
+        const lastComma = remaining.lastIndexOf(', ', maxLength);
+        
+        // Prefer sentence breaks, then commas, then spaces
+        if (lastPeriod > maxLength * 0.5) {
+            breakPoint = lastPeriod + 1;
+        } else if (lastComma > maxLength * 0.5) {
+            breakPoint = lastComma + 1;
+        } else if (lastSpace > maxLength * 0.5) {
+            breakPoint = lastSpace;
+        }
+        
+        tweets.push(remaining.substring(0, breakPoint).trim() + '...');
+        remaining = '...' + remaining.substring(breakPoint).trim();
+    }
+    
+    return tweets;
+}
+
 // Post to Twitter as a thread (uses pre-generated thread from OpenAI)
 async function postToTwitter(content, config) {
     const client = new TwitterApi({
@@ -597,14 +771,23 @@ async function postToTwitter(content, config) {
     });
 
     // Use the thread generated by OpenAI
-    const tweets = content.thread || [];
+    const rawTweets = content.thread || [];
+    
+    // Process tweets - split any that are too long
+    const tweets = [];
+    for (const tweet of rawTweets) {
+        const splitTweets = splitTweet(tweet, 275);
+        tweets.push(...splitTweets);
+    }
+    
+    console.log(`🐦 Posting ${tweets.length} tweets (from ${rawTweets.length} original)`);
     
     // Post thread
     let lastTweetId = null;
     const postedTweets = [];
     
     for (let i = 0; i < tweets.length; i++) {
-        const tweetText = tweets[i].substring(0, 280);
+        const tweetText = tweets[i].substring(0, 280); // Safety limit
         
         const options = lastTweetId 
             ? { reply: { in_reply_to_tweet_id: lastTweetId } }
@@ -693,14 +876,14 @@ export default async function handler(req, res) {
                 break;
                 
             case 'case_study':
-                // Evening = Case Study (no Tavily)
+                // Evening = Case Study with REAL company examples (1 Tavily credit)
                 console.log(`🏗️ Generating Case Study for ${schedule.category}...`);
                 content = await generateCaseStudy(schedule.category, recentTopics, config);
                 topicInfo = { 
                     type: 'case_study', 
                     category: schedule.category, 
                     topic: content.title,
-                    tavilyCredits: 0
+                    tavilyCredits: 1
                 };
                 break;
                 
