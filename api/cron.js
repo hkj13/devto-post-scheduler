@@ -7,8 +7,10 @@ import { TwitterApi } from 'twitter-api-v2';
  * Self-contained function for serverless environment
  */
 
-// High-level topic categories for AI to explore autonomously
-const TOPIC_CATEGORIES = [
+// ============================================
+// TECHNICAL TOPICS - For tutorials and tech trends
+// ============================================
+const TECH_CATEGORIES = [
     // AI & ML Deep Dives
     "Agentic AI & Autonomous Agents",
     "Generative AI & Diffusion Models", 
@@ -26,11 +28,6 @@ const TOPIC_CATEGORIES = [
     "MLOps & Model Deployment",
     "Feature Engineering & Data Pipelines",
     
-    // Product & Business
-    "Product Management & Strategy",
-    "Product Analytics & Metrics",
-    "Growth Engineering",
-    
     // Development
     "Cloud Computing & Infrastructure",
     "System Design & Architecture",
@@ -40,47 +37,121 @@ const TOPIC_CATEGORIES = [
     "Database Systems & Data Modeling",
 ];
 
+// ============================================
+// BUSINESS/MBA TOPICS - For business posts
+// ============================================
+const BUSINESS_CATEGORIES = [
+    // Strategy & Management
+    "Business Strategy & Competitive Analysis",
+    "Startup Fundamentals & Entrepreneurship",
+    "Venture Capital & Fundraising",
+    "Growth Strategy & Scaling",
+    
+    // Product & Marketing
+    "Product Management & Strategy",
+    "Product-Market Fit & Validation",
+    "Digital Marketing & Growth Hacking",
+    "Customer Acquisition & Retention",
+    
+    // Operations & Finance
+    "Business Operations & Efficiency",
+    "Financial Modeling & Analysis",
+    "Unit Economics & Metrics",
+    "Business Model Innovation",
+    
+    // Leadership & Organization
+    "Leadership & Team Building",
+    "Organizational Design & Culture",
+    "Decision Making Frameworks",
+    "Negotiation & Communication",
+];
+
 // Detailed subtopics for focused content
 const SUBTOPICS = {
+    // === TECH SUBTOPICS ===
     "Agentic AI & Autonomous Agents": [
         "Multi-agent systems", "Agent orchestration", "Tool use & function calling",
-        "ReAct pattern", "AutoGPT architecture", "CrewAI & LangGraph",
-        "Agent memory systems", "Planning & reasoning", "Agent evaluation"
+        "ReAct pattern", "Agent frameworks (CrewAI, LangGraph, AutoGen)",
+        "Agent memory systems", "Planning & reasoning", "Agent evaluation",
+        "Human-in-the-loop agents", "Agent deployment patterns"
     ],
     "Generative AI & Diffusion Models": [
-        "Stable Diffusion", "DALL-E & Midjourney", "ControlNet & LoRA",
-        "Image generation pipelines", "Video generation (Sora, Runway)",
-        "Audio generation", "3D generation", "Inpainting & outpainting"
+        "Diffusion model architecture", "Image generation pipelines", 
+        "ControlNet & LoRA fine-tuning", "Video generation models",
+        "Audio & music generation", "3D generation", "Inpainting & outpainting",
+        "Prompt engineering for images", "Model merging & optimization"
     ],
     "Large Language Models (LLMs)": [
-        "GPT-4 & Claude architecture", "Llama & open-source LLMs", "Gemini & PaLM",
-        "Tokenization", "Attention mechanisms", "Context windows",
-        "Inference optimization", "Quantization (GGUF, GPTQ)", "Serving LLMs"
+        "Transformer architecture deep dive", "Open-source vs closed-source LLMs",
+        "Tokenization strategies", "Attention mechanisms & variants",
+        "Context window optimization", "Inference optimization techniques",
+        "Quantization methods (GGUF, GPTQ, AWQ)", "LLM serving & deployment",
+        "Benchmarking & evaluation", "Multimodal LLMs"
     ],
     "RAG & Vector Databases": [
-        "Retrieval-Augmented Generation", "Pinecone & Weaviate", "ChromaDB & Milvus",
-        "Embedding models", "Chunking strategies", "Hybrid search",
-        "Reranking", "Knowledge graphs + RAG", "Evaluation metrics"
-    ],
-    "Prompt Engineering & AI Workflows": [
-        "Chain-of-thought prompting", "Few-shot learning", "System prompts",
-        "LangChain & LlamaIndex", "Prompt templates", "Output parsing",
-        "Structured outputs", "Guardrails & safety"
+        "RAG architecture patterns", "Vector database comparison",
+        "Embedding models & selection", "Chunking strategies",
+        "Hybrid search (dense + sparse)", "Reranking techniques",
+        "Knowledge graphs + RAG", "Evaluation metrics (RAGAS)",
+        "Production RAG pipelines", "Multi-modal RAG"
     ],
     "Quantum Computing & Quantum ML": [
-        "Quantum basics for developers", "Qiskit & Cirq", "Quantum algorithms",
-        "Quantum machine learning", "Variational circuits", "Quantum advantage",
-        "Hybrid classical-quantum", "Quantum error correction"
+        "Quantum computing fundamentals", "Quantum gates & circuits",
+        "Quantum algorithms (Grover, Shor)", "Quantum machine learning",
+        "Variational quantum circuits", "Quantum advantage use cases",
+        "Hybrid classical-quantum systems", "Quantum error correction",
+        "Quantum SDKs (Qiskit, Cirq, PennyLane)"
     ],
     "Data Science & Analytics": [
-        "Exploratory data analysis", "Statistical modeling", "A/B testing",
-        "Causal inference", "Time series analysis", "Anomaly detection",
-        "Customer segmentation", "Churn prediction", "Recommendation systems"
+        "Exploratory data analysis", "Statistical modeling",
+        "A/B testing & experimentation", "Causal inference",
+        "Time series forecasting", "Anomaly detection",
+        "Customer segmentation", "Churn prediction",
+        "Recommendation systems", "Feature importance analysis"
+    ],
+    
+    // === BUSINESS SUBTOPICS ===
+    "Business Strategy & Competitive Analysis": [
+        "Porter's Five Forces", "SWOT & PESTEL analysis",
+        "Blue Ocean Strategy", "Competitive moats",
+        "Market sizing (TAM/SAM/SOM)", "Strategic positioning",
+        "First-mover vs fast-follower", "Platform business models"
+    ],
+    "Startup Fundamentals & Entrepreneurship": [
+        "Lean Startup methodology", "MVP development",
+        "Customer discovery", "Pivot strategies",
+        "Founder-market fit", "Co-founder dynamics",
+        "Early-stage hiring", "Startup legal basics"
+    ],
+    "Venture Capital & Fundraising": [
+        "VC landscape & terminology", "Pitch deck essentials",
+        "Valuation methods", "Term sheets explained",
+        "Due diligence process", "Cap table management",
+        "Fundraising stages (Pre-seed to Series D)", "Alternative funding"
     ],
     "Product Management & Strategy": [
-        "Product discovery", "User research", "Roadmap planning",
-        "Prioritization frameworks", "OKRs & KPIs", "Go-to-market strategy",
-        "Product-led growth", "Feature flags", "Experimentation"
+        "Product discovery techniques", "User research methods",
+        "Roadmap planning", "Prioritization frameworks (RICE, ICE)",
+        "OKRs & KPIs", "Go-to-market strategy",
+        "Product-led growth", "Feature flags & experimentation"
+    ],
+    "Financial Modeling & Analysis": [
+        "Revenue modeling", "Cost structure analysis",
+        "Cash flow forecasting", "Break-even analysis",
+        "Scenario planning", "Financial statements basics",
+        "Valuation methods (DCF, comparables)", "Unit economics"
+    ],
+    "Leadership & Team Building": [
+        "Leadership styles", "Building high-performing teams",
+        "Delegation frameworks", "Feedback & 1:1s",
+        "Remote team management", "Conflict resolution",
+        "Performance management", "Scaling culture"
+    ],
+    "Decision Making Frameworks": [
+        "First principles thinking", "Mental models",
+        "Decision trees", "Probabilistic thinking",
+        "Reversible vs irreversible decisions", "OODA loop",
+        "Pre-mortem analysis", "Second-order thinking"
     ],
 };
 
@@ -105,15 +176,15 @@ function getConfig() {
     };
 }
 
-// Post types for daily rotation
-const POST_TYPES = ['latest_news', 'tutorial', 'case_study'];
+// ============================================
+// POST SCHEDULE PATTERN
+// ============================================
+// Daily 3 posts:
+//   - Slot 0 (morning): Latest Trends & Insights (alternating Tech/Business days)
+//   - Slot 1 (afternoon): Startup, Business & MBA content
+//   - Slot 2 (evening): Technical Tutorial
+// Monday Slot 0: Weekly Tech + Business Recap
 
-// Get post schedule for today
-// Pattern: 
-//   - Slot 0 (morning): Latest News (uses Tavily - 1 credit)
-//   - Slot 1 (afternoon): Tutorial (structured: "Category - Topic - Explained")
-//   - Slot 2 (evening): Case Study (real-world implementation)
-//   - Monday Slot 0: Weekly Recap (uses Tavily - 5 credits)
 function getPostSchedule() {
     const now = new Date();
     const dayOfWeek = now.getUTCDay(); // 0 = Sunday, 1 = Monday
@@ -122,28 +193,60 @@ function getPostSchedule() {
     // Determine time slot: 0 = morning, 1 = afternoon, 2 = evening
     const timeSlot = hour < 8 ? 0 : hour < 16 ? 1 : 2;
     
-    // Monday first post = Weekly Recap
-    if (dayOfWeek === 1 && timeSlot === 0) {
-        return { postType: 'weekly_recap', isRecap: true };
-    }
-    
-    // Rotate through categories based on date
+    // Calculate day of year for rotation
     const startOfYear = new Date(now.getUTCFullYear(), 0, 0);
     const diff = now - startOfYear;
     const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
     
-    // Pick category (rotates daily through all categories)
-    const categoryIndex = dayOfYear % TOPIC_CATEGORIES.length;
-    const category = TOPIC_CATEGORIES[categoryIndex];
+    // Monday first post = Weekly Recap (Tech + Business)
+    if (dayOfWeek === 1 && timeSlot === 0) {
+        return { postType: 'weekly_recap', isRecap: true };
+    }
     
-    // Pick post type based on time slot
-    const postType = POST_TYPES[timeSlot];
+    // Determine if today is a "tech trends" or "business trends" day (alternating)
+    const isTechTrendsDay = dayOfYear % 2 === 0;
+    
+    let postType, category, categoryType;
+    
+    switch (timeSlot) {
+        case 0:
+            // Morning: Latest Trends & Insights (alternating tech/business)
+            postType = 'trends';
+            if (isTechTrendsDay) {
+                categoryType = 'tech';
+                const techIndex = dayOfYear % TECH_CATEGORIES.length;
+                category = TECH_CATEGORIES[techIndex];
+            } else {
+                categoryType = 'business';
+                const bizIndex = dayOfYear % BUSINESS_CATEGORIES.length;
+                category = BUSINESS_CATEGORIES[bizIndex];
+            }
+            break;
+            
+        case 1:
+            // Afternoon: Startup, Business & MBA content
+            postType = 'business';
+            categoryType = 'business';
+            const bizIndex = dayOfYear % BUSINESS_CATEGORIES.length;
+            category = BUSINESS_CATEGORIES[bizIndex];
+            break;
+            
+        case 2:
+            // Evening: Technical Tutorial
+            postType = 'tutorial';
+            categoryType = 'tech';
+            const techIndex = dayOfYear % TECH_CATEGORIES.length;
+            category = TECH_CATEGORIES[techIndex];
+            break;
+    }
     
     return { 
         postType, 
-        category, 
+        category,
+        categoryType,
         isRecap: false,
         timeSlot,
+        isTechTrendsDay,
         dayOfYear 
     };
 }
@@ -258,9 +361,26 @@ async function searchTavilyNews(category, days = 7) {
         'Backend Development & APIs': 'backend API Node.js Python Go REST GraphQL microservices news',
         'DevOps & Platform Engineering': 'DevOps platform engineering CI/CD Terraform infrastructure as code news',
         'Database Systems & Data Modeling': 'database PostgreSQL MongoDB Redis data modeling schema design news',
+        
+        // Business Categories
+        'Business Strategy & Competitive Analysis': 'business strategy competitive analysis Porter Five Forces market positioning news',
+        'Startup Fundamentals & Entrepreneurship': 'startup entrepreneurship lean startup MVP founder news',
+        'Venture Capital & Fundraising': 'venture capital fundraising Series A B C startup funding news',
+        'Growth Strategy & Scaling': 'growth strategy scaling startup growth hacking news',
+        'Product-Market Fit & Validation': 'product market fit validation customer discovery startup news',
+        'Digital Marketing & Growth Hacking': 'digital marketing growth hacking SEO social media startup news',
+        'Customer Acquisition & Retention': 'customer acquisition retention CAC LTV churn startup news',
+        'Business Operations & Efficiency': 'business operations efficiency startup operations scaling news',
+        'Financial Modeling & Analysis': 'financial modeling analysis startup finance valuation news',
+        'Unit Economics & Metrics': 'unit economics metrics startup KPIs SaaS metrics news',
+        'Business Model Innovation': 'business model innovation platform economy subscription news',
+        'Leadership & Team Building': 'leadership team building startup culture hiring news',
+        'Organizational Design & Culture': 'organizational design culture remote work startup news',
+        'Decision Making Frameworks': 'decision making frameworks mental models first principles news',
+        'Negotiation & Communication': 'negotiation communication business skills leadership news',
     };
     
-    const query = categoryQueries[category] || `${category} latest news announcements`;
+    const query = categoryQueries[category] || `${category} latest news trends`;
     
     try {
         const response = await axios.post('https://api.tavily.com/search', {
@@ -288,14 +408,19 @@ async function searchTavilyNews(category, days = 7) {
     return [];
 }
 
-// Search multiple categories for weekly recap (5 searches = 5 credits)
+// Search multiple categories for weekly recap (8 searches = 8 credits for comprehensive coverage)
 async function searchWeeklyNews() {
     const categories = [
-        'AI & Machine Learning',
-        'DevTools',
-        'Cloud & DevOps',
-        'Startups',
-        'Open Source',
+        // Tech categories
+        'Large Language Models (LLMs)',
+        'Agentic AI & Autonomous Agents',
+        'Cloud Computing & Infrastructure',
+        'DevOps & Platform Engineering',
+        // Business categories
+        'Venture Capital & Fundraising',
+        'Startup Fundamentals & Entrepreneurship',
+        'Product Management & Strategy',
+        'Business Strategy & Competitive Analysis',
     ];
     
     const allNews = [];
@@ -308,7 +433,7 @@ async function searchWeeklyNews() {
     return allNews;
 }
 
-// Generate Weekly Tech Recap with REAL news (runs on Mondays)
+// Generate Weekly Tech + Business Recap with REAL news (runs on Mondays)
 async function generateWeeklyRecap(config) {
     const openai = new OpenAI({ apiKey: config.openai.apiKey });
     
@@ -320,19 +445,19 @@ async function generateWeeklyRecap(config) {
     
     const dateRange = `${lastMonday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${lastSunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
     
-    // Fetch real news from Tavily (5 searches = 5 credits)
-    console.log('🔍 Searching for real tech news from last 7 days...');
+    // Fetch real news from Tavily (8 searches = 8 credits for comprehensive coverage)
+    console.log('🔍 Searching for real tech + business news from last 7 days...');
     const realNews = await searchWeeklyNews();
     console.log(`📰 Found ${realNews.length} real news articles`);
     
     // Build context from real news
     const newsContext = realNews.length > 0
         ? `\n\nREAL NEWS ARTICLES FROM THIS WEEK:\n${realNews.map((n, i) => 
-            `${i + 1}. ${n.title}\n   Source: ${n.url}\n   Summary: ${n.content.substring(0, 200)}...`
+            `${i + 1}. [${n.category}] ${n.title}\n   Source: ${n.url}\n   Summary: ${n.content.substring(0, 200)}...`
         ).join('\n\n')}\n\nUse ONLY the above verified news articles. Do not invent any information.`
-        : '\n\nNo real-time news available. Write about general tech trends instead.';
+        : '\n\nNo real-time news available. Write about general trends instead.';
     
-    const prompt = `CRITICAL: You are creating a FACTUAL tech news recap for ${dateRange}.
+    const prompt = `CRITICAL: You are creating a FACTUAL TECH + BUSINESS news recap for ${dateRange}.
 ${newsContext}
 
 ⚠️ STRICT RULES - MUST FOLLOW:
@@ -343,26 +468,32 @@ ${newsContext}
 5. If no real news is available, write about general trends
 
 STRUCTURE:
-Organize the verified news into clear sections:
+Organize the verified news into clear sections (BOTH Tech AND Business):
 
-1. **AI & Machine Learning** - Real announcements from the articles
-2. **Developer Tools** - Actual releases and updates
-3. **Cloud & Infrastructure** - Verified platform updates
-4. **Startups & Funding** - Confirmed funding rounds and acquisitions
-5. **Open Source** - Real project releases and trends
+## 🔧 TECH
+1. **AI & Machine Learning** - LLMs, agents, generative AI announcements
+2. **Cloud & DevOps** - Infrastructure, platform updates
+3. **Developer Tools** - New releases, framework updates
+
+## 💼 BUSINESS
+4. **Startup & Funding** - Funding rounds, acquisitions, IPOs
+5. **Product & Strategy** - Product launches, business moves
+6. **Industry Insights** - Market trends, leadership changes
 
 FORMAT:
 1. DEV.TO ARTICLE:
-- Title: "Weekly Tech Recap: [Key Highlight] (${dateRange})" - under 60 chars
-- Content: 1000-1500 words, markdown
+- Title: "Weekly Recap: Tech + Business (${dateRange})" - under 60 chars
+- Content: 1500-2000 words, markdown (longer for comprehensive coverage)
 - Include source URLs for each news item
-- Organize by sections above
-- Tags: ["weeklyrecap", "technews", "ai", "webdev"]
+- Organize by sections above (both tech AND business)
+- Tags: ["weeklyrecap", "technews", "startup", "business"]
 
-2. TWITTER THREAD (7-8 tweets):
-- Tweet 1: "🗞️ Weekly Tech Recap (${dateRange}) - Real news from the tech world! 🧵"
-- Tweets 2-7: One verified news item per tweet
-- Tweet 8: "Sources in the full article 👆 #TechNews #WeeklyRecap"
+2. TWITTER THREAD (8-10 tweets, max 250 chars each):
+- Tweet 1: "🗞️ Weekly Tech + Business Recap (${dateRange}) 🧵"
+- Tweets 2-4: Top tech news (short, punchy)
+- Tweets 5-7: Top business/startup news
+- Tweets 8-9: Key insights
+- Tweet 10: "Full article with sources 👆 #TechNews #StartupNews"
 
 Return as JSON:
 {
@@ -470,6 +601,134 @@ Return as JSON:
         model: config.openai.model,
         messages: [{ role: 'user', content: prompt }],
         response_format: { type: 'json_object' },
+    });
+
+    return JSON.parse(response.choices[0].message.content);
+}
+
+// Generate Trends & Insights post (1 Tavily credit)
+async function generateTrends(category, categoryType, config) {
+    const openai = new OpenAI({ apiKey: config.openai.apiKey });
+    
+    // Fetch real news/trends for this category (1 credit)
+    console.log(`🔍 Searching latest ${category} trends...`);
+    const news = await searchTavilyNews(category, 3);
+    console.log(`📰 Found ${news.length} trend articles`);
+    
+    const newsContext = news.length > 0
+        ? `REAL NEWS & TRENDS:\n${news.map((n, i) => 
+            `${i + 1}. ${n.title}\n   Source: ${n.url}\n   Summary: ${n.content.substring(0, 300)}...`
+        ).join('\n\n')}\n\nUse these verified sources.`
+        : 'No real-time news found. Write about emerging trends and insights.';
+    
+    const typeLabel = categoryType === 'tech' ? '🔧 Tech' : '💼 Business';
+    
+    const prompt = `Create a TRENDS & INSIGHTS article about "${category}".
+
+${newsContext}
+
+TYPE: ${typeLabel} Trends
+
+⚠️ RULES:
+1. Use verified sources when available
+2. Focus on actionable insights, not just news
+3. Include analysis and implications
+4. ${categoryType === 'tech' ? 'Include technical details and code snippets where relevant' : 'Include business frameworks and strategic insights'}
+
+FORMAT:
+1. DEV.TO ARTICLE:
+- Title: "${category}: Key Trends & Insights" or similar, under 60 chars
+- Content: 1000-1500 words, markdown
+- Sections: Overview, Key Trends, Analysis, What This Means, Action Items
+- Tags: ["trends", "${categoryType}", related tags]
+
+2. TWITTER THREAD (5-6 tweets, max 250 chars each):
+- Tweet 1: "📊 ${category} Trends - What you need to know 🧵"
+- Tweets 2-5: Key insights (short, punchy)
+- Tweet 6: "What trends are you seeing? #${categoryType === 'tech' ? 'TechTrends' : 'BusinessTrends'}"
+
+Return as JSON:
+{
+  "title": "Article title",
+  "content": "Full markdown article...",
+  "tags": ["trends", "tag2", "tag3", "tag4"],
+  "thread": ["tweet1", "tweet2", ...]
+}`;
+
+    const response = await openai.chat.completions.create({
+        model: config.openai.model,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+    });
+
+    return JSON.parse(response.choices[0].message.content);
+}
+
+// Generate Business/MBA content post (1 Tavily credit for real examples)
+async function generateBusinessContent(category, recentTopics, config) {
+    const openai = new OpenAI({ apiKey: config.openai.apiKey });
+    
+    // Search for real business examples (1 credit)
+    console.log(`🔍 Searching real ${category} examples...`);
+    const examples = await searchTavilyNews(category, 30); // Last 30 days for business content
+    console.log(`📚 Found ${examples.length} business examples`);
+    
+    const examplesContext = examples.length > 0
+        ? `REAL BUSINESS EXAMPLES:\n${examples.map((e, i) => 
+            `${i + 1}. ${e.title}\n   Source: ${e.url}\n   Summary: ${e.content.substring(0, 300)}...`
+        ).join('\n\n')}\n\nReference these real examples where relevant.`
+        : 'Use well-known business cases from major companies.';
+    
+    const recentTitles = recentTopics.map(t => `- ${t.title}`).join('\n');
+    
+    const prompt = `Create a BUSINESS/MBA article about "${category}".
+
+${examplesContext}
+
+RECENT POSTS TO AVOID:
+${recentTitles || 'None'}
+
+TARGET AUDIENCE: Tech professionals, founders, product managers, MBA students
+
+CONTENT STYLE:
+- Explain business concepts clearly with practical examples
+- Include frameworks and mental models
+- Use real company case studies (from search results above)
+- Make it actionable with templates/checklists where appropriate
+- NO code, but can include tables/diagrams in markdown
+
+TITLE FORMAT:
+- "[Framework/Concept]: A Practical Guide for Tech Leaders"
+- "[Topic] Explained: What Every Founder Should Know"
+- "Mastering [Skill]: An MBA Perspective"
+
+FORMAT:
+1. DEV.TO ARTICLE:
+- Title: Clear and professional, under 60 chars
+- Content: 1200-1800 words, markdown
+- Sections: Introduction, Core Concepts, Framework/Model, Real Examples, Application, Key Takeaways
+- Include at least one table or framework visualization
+- Tags: ["business", "startup", "strategy", related tag]
+
+2. TWITTER THREAD (6-7 tweets, max 250 chars each):
+- Tweet 1: "💼 [Topic] - What I learned from [Company/MBA] 🧵"
+- Tweets 2-5: Key frameworks/insights
+- Tweet 6-7: How to apply + hashtags
+
+Return as JSON:
+{
+  "title": "Article title",
+  "content": "Full markdown article...",
+  "tags": ["business", "startup", "tag3", "tag4"],
+  "thread": ["tweet1", "tweet2", ...]
+}`;
+
+    const response = await openai.chat.completions.create({
+        model: config.openai.model,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.8,
     });
 
     return JSON.parse(response.choices[0].message.content);
@@ -840,50 +1099,52 @@ export default async function handler(req, res) {
         
         switch (schedule.postType) {
             case 'weekly_recap':
-                // Monday morning = Weekly Tech Recap (5 Tavily credits)
-                console.log(`📰 Generating Weekly Tech Recap...`);
+                // Monday morning = Weekly Tech + Business Recap (8 Tavily credits)
+                console.log(`📰 Generating Weekly Tech + Business Recap...`);
                 content = await generateWeeklyRecap(config);
                 topicInfo = { 
                     type: 'weekly_recap', 
                     category: 'recap', 
-                    topic: 'Weekly Tech Recap',
-                    tavilyCredits: 5
+                    topic: 'Weekly Tech + Business Recap',
+                    tavilyCredits: 8
                 };
                 break;
                 
-            case 'latest_news':
-                // Morning = Latest News (1 Tavily credit)
-                console.log(`�️ Generating Latest News for ${schedule.category}...`);
-                content = await generateLatestNews(schedule.category, config);
+            case 'trends':
+                // Morning = Latest Trends & Insights (alternating tech/business) - 1 Tavily credit
+                const trendsLabel = schedule.categoryType === 'tech' ? '🔧 Tech' : '💼 Business';
+                console.log(`📊 Generating ${trendsLabel} Trends for ${schedule.category}...`);
+                content = await generateTrends(schedule.category, schedule.categoryType, config);
                 topicInfo = { 
-                    type: 'latest_news', 
+                    type: 'trends', 
+                    category: schedule.category,
+                    categoryType: schedule.categoryType,
+                    topic: content.title,
+                    tavilyCredits: 1
+                };
+                break;
+                
+            case 'business':
+                // Afternoon = Startup, Business & MBA content (1 Tavily credit)
+                console.log(`� Generating Business/MBA content for ${schedule.category}...`);
+                content = await generateBusinessContent(schedule.category, recentTopics, config);
+                topicInfo = { 
+                    type: 'business', 
                     category: schedule.category, 
-                    topic: `${schedule.category} News`,
+                    topic: content.title,
                     tavilyCredits: 1
                 };
                 break;
                 
             case 'tutorial':
-                // Afternoon = Tutorial (no Tavily)
-                console.log(`📚 Generating Tutorial for ${schedule.category}...`);
+                // Evening = Technical Tutorial (no Tavily)
+                console.log(`📚 Generating Technical Tutorial for ${schedule.category}...`);
                 content = await generateTutorial(schedule.category, recentTopics, config);
                 topicInfo = { 
                     type: 'tutorial', 
                     category: schedule.category, 
                     topic: content.title,
                     tavilyCredits: 0
-                };
-                break;
-                
-            case 'case_study':
-                // Evening = Case Study with REAL company examples (1 Tavily credit)
-                console.log(`🏗️ Generating Case Study for ${schedule.category}...`);
-                content = await generateCaseStudy(schedule.category, recentTopics, config);
-                topicInfo = { 
-                    type: 'case_study', 
-                    category: schedule.category, 
-                    topic: content.title,
-                    tavilyCredits: 1
                 };
                 break;
                 
